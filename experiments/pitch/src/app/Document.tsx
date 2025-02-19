@@ -1,5 +1,3 @@
-import stylesUrl from "./style.css?url";
-
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => (
@@ -8,7 +6,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Pitch: The AI-Powered Sales Tool</title>
-      <link rel="stylesheet" href={stylesUrl} />
+      <link rel="stylesheet" href="/src/app/styles.css" />
       <script type="module" src="/src/client.tsx"></script>
     </head>
     <body>
