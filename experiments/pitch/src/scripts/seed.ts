@@ -53,22 +53,81 @@ export default defineScript(async ({ env }) => {
               isRequired: true,
             },
             {
-              questionText: "What is your age?",
-              questionType: QuestionType.NUMBER,
+              questionText: "Tell us about your company, product, or idea.",
+              description:
+                "Provide a clear and concise overview of what you're working on",
+              questionType: QuestionType.TEXT,
               questionPosition: 1,
               isRequired: true,
             },
             {
-              questionText: "Are you currently employed?",
-              questionType: QuestionType.BOOLEAN,
+              questionText: "Tell us about yourself.",
+              description: "Who are you and why are you working on this?",
+              questionType: QuestionType.TEXT,
               questionPosition: 2,
               isRequired: true,
             },
             {
-              questionText: "What is your current salary?",
-              questionType: QuestionType.CURRENCY,
+              questionText: "How far along are you?",
+              description:
+                "Tell us about your journey so far and how PWV can help. Tell us about any customers.",
+              questionType: QuestionType.TEXT,
               questionPosition: 3,
+              isRequired: true,
+            },
+            {
+              questionText: "Have you raised outside capital?",
+              questionType: QuestionType.BOOLEAN,
+              questionPosition: 4,
+              isRequired: true,
+            },
+            {
+              questionText:
+                "Who have you raised from and what were the round and terms?",
+              questionType: QuestionType.TEXT,
+              questionPosition: 5,
+              isRequired: true,
+            },
+            {
+              questionText: "Where can we find you on LinkedIn?",
+              questionType: QuestionType.URL, // Note: Should be URL if available in schema
+              questionPosition: 6,
               isRequired: false,
+            },
+            {
+              questionText:
+                "Feel free to share your website here if you have one.",
+              questionType: QuestionType.URL, // Note: Should be URL if available in schema
+              questionPosition: 7,
+              isRequired: false,
+            },
+            {
+              questionText: "How did you hear about PWV?",
+              description: "Who do you know that we might know?",
+              questionType: QuestionType.TEXT,
+              questionPosition: 8,
+              isRequired: true,
+            },
+            {
+              questionText:
+                "Please attach any supporting files, like a deck, demo, etc.",
+              questionType: QuestionType.FILE, // Note: Should be FILE if available in schema
+              questionPosition: 9,
+              isRequired: true,
+            },
+            {
+              questionText: "How would you categorize your company?",
+              description:
+                "Select the category that best describes your company",
+              questionType: QuestionType.TEXT,
+              questionPosition: 10,
+              isRequired: true,
+            },
+            {
+              questionText: "Were you referred by someone?",
+              questionType: QuestionType.TEXT,
+              questionPosition: 11,
+              isRequired: true,
             },
           ],
         },
@@ -121,6 +180,21 @@ export default defineScript(async ({ env }) => {
             case QuestionType.CURRENCY:
               answerData.answerCurrency = Math.floor(Math.random() * 10_000);
               answerData.currencyType = CurrencyType.USD;
+              break;
+            case QuestionType.FILE:
+              answerData.fileUrl = "https://example.com/file.pdf";
+              break;
+            case QuestionType.DATE:
+              answerData.answerDate = new Date();
+              break;
+            case QuestionType.DATETIME:
+              answerData.answerDatetime = new Date();
+              break;
+            case QuestionType.PHONE:
+              answerData.phone = "+1234567890";
+              break;
+            case QuestionType.URL:
+              answerData.url = "https://example.com";
               break;
             default:
               answerData.answerText = "Sample Text";
