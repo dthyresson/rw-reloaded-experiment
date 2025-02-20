@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
+
 export async function Home() {
   const users = await db.user.findMany();
 
