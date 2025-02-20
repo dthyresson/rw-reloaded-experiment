@@ -15,8 +15,8 @@ enabled = true
 
 [[d1_databases]]
 binding = "DB"
-database_name = "pwv-pitch-db"
-database_id = "e1da3972-a0c8-46ed-83ec-87f72a6ff349"
+database_name = "pwv-pitch-1"
+database_id = "23b0c328-86e5-4f6d-a192-1f32bb28e08f"
 
 [[r2_buckets]]
 bucket_name = "pitch"
