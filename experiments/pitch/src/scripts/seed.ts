@@ -1,141 +1,148 @@
 // Hint: Seeeding data should look at ./prisma/schema.prisma
 import { defineScript } from "@redwoodjs/sdk/worker";
 import { db, setupDb } from "../db";
+// @ts-ignore
 import { QuestionType, CurrencyType } from "@prisma/client";
 
 export default defineScript(async ({ env }) => {
-  setupDb(env);
+  try {
+    setupDb(env);
 
-  await db.$executeRawUnsafe(`\
-    DELETE FROM Answer;
-    DELETE FROM Question;
-    DELETE FROM QuestionSet;
-    DELETE FROM Submission;
-    DELETE FROM Otp;
-    DELETE FROM User;
-    DELETE FROM sqlite_sequence;
-  `);
+    await db.$executeRawUnsafe(`\
+      DELETE FROM Answer;
+      DELETE FROM Question;
+      DELETE FROM QuestionSet;
+      DELETE FROM Submission;
+      DELETE FROM Otp;
+      DELETE FROM User;
+      DELETE FROM sqlite_sequence;
+    `);
 
-  await db.user.createMany({
-    data: [
-      {
-        email: "dt@pwv.com",
-        name: "DT",
-      },
-      {
-        email: "david@pwv.com",
-        name: "David",
-      },
-      {
-        email: "tom@pwv.com",
-        name: "Tom",
-      },
-      {
-        email: "jen@pwv.com",
-        name: "Jen",
-      },
-    ],
-  });
+    await db.user.createMany({
+      data: [
+        {
+          email: "dt@pwv.com",
+          name: "DT",
+        },
+        {
+          email: "david@pwv.com",
+          name: "David",
+        },
+        {
+          email: "tom@pwv.com",
+          name: "Tom",
+        },
+        {
+          email: "jen@pwv.com",
+          name: "Jen",
+        },
+      ],
+    });
 
-  await db.questionSet.create({
-    data: {
-      name: "Pitch",
-      versionNumber: 1,
-      isActive: true,
-      questions: {
-        create: [
-          {
-            questionText: "What is your name?",
-            questionType: QuestionType.TEXT,
-            questionPosition: 0,
-            isRequired: true,
-          },
-          {
-            questionText: "What is your age?",
-            questionType: QuestionType.NUMBER,
-            questionPosition: 1,
-            isRequired: true,
-          },
-          {
-            questionText: "Are you currently employed?",
-            questionType: QuestionType.BOOLEAN,
-            questionPosition: 2,
-            isRequired: true,
-          },
-          {
-            questionText: "What is your current salary?",
-            questionType: QuestionType.CURRENCY,
-            questionPosition: 3,
-            isRequired: false,
-          },
-        ],
-      },
-    },
-  });
-
-  // submission
-  const user = await db.user.findUnique({
-    where: { email: "dt@pwv.com" },
-  });
-
-  const questionSet = await db.questionSet.findFirst({
-    where: { name: "Pitch", versionNumber: 1 },
-    include: { questions: true },
-  });
-
-  if (!user || !questionSet) {
-    throw new Error("User or QuestionSet not found");
-  }
-
-  const submission = await db.submission.create({
-    data: {
-      userId: user.id,
-      questionSetId: questionSet.id,
-      status: "IN_PROGRESS",
-    },
-  });
-
-  console.log(questionSet.questions);
-  console.log(submission);
-
-  // Create answers one by one
-  for (const question of questionSet.questions) {
-    await db.answer.create({
+    await db.questionSet.create({
       data: {
-        submissionId: submission.id,
-        questionId: question.id,
-        // Provide appropriate sample answers based on question type
-        ...(question.questionType === QuestionType.TEXT && {
-          answerText: "Sample Text",
-        }),
-        ...(question.questionType === QuestionType.NUMBER && {
-          answerNumber: 42,
-        }),
-        ...(question.questionType === QuestionType.BOOLEAN && {
-          answerBoolean: 1,
-        }),
-        ...(question.questionType === QuestionType.CURRENCY && {
-          answerCurrency: 75000,
-          currencyType: CurrencyType.USD,
-        }),
-        ...(question.questionType === QuestionType.FILE && {
-          fileUrl: "https://example.com/sample-file.pdf",
-        }),
-        ...(question.questionType === QuestionType.DATE && {
-          answerDate: new Date("2024-03-15"),
-        }),
-        ...(question.questionType === QuestionType.DATETIME && {
-          answerDatetime: new Date("2024-03-15T14:30:00Z"),
-        }),
-        ...(question.questionType === QuestionType.PHONE && {
-          phone: "+1-555-123-4567",
-        }),
-        ...(question.questionType === QuestionType.URL && {
-          url: "https://example.com",
-        }),
+        name: "Pitch",
+        versionNumber: 1,
+        isActive: true,
+        questions: {
+          create: [
+            {
+              questionText: "What is your name?",
+              questionType: QuestionType.TEXT,
+              questionPosition: 0,
+              isRequired: true,
+            },
+            {
+              questionText: "What is your age?",
+              questionType: QuestionType.NUMBER,
+              questionPosition: 1,
+              isRequired: true,
+            },
+            {
+              questionText: "Are you currently employed?",
+              questionType: QuestionType.BOOLEAN,
+              questionPosition: 2,
+              isRequired: true,
+            },
+            {
+              questionText: "What is your current salary?",
+              questionType: QuestionType.CURRENCY,
+              questionPosition: 3,
+              isRequired: false,
+            },
+          ],
+        },
       },
     });
-  }
 
-  console.log("🌱 Finished seeding");
+    // Get all users and create submissions for each
+    const users = await db.user.findMany();
+
+    const questionSet = await db.questionSet.findFirst({
+      where: { name: "Pitch", versionNumber: 1 },
+      include: { questions: true },
+    });
+
+    if (!questionSet) {
+      throw new Error("QuestionSet not found");
+    }
+
+    // Create submissions for each user
+    for (const user of users) {
+      const submission = await db.submission.create({
+        data: {
+          userId: user.id,
+          questionSetId: questionSet.id,
+          status: "IN_PROGRESS",
+        },
+      });
+
+      console.log(`Created submission for ${user.name}:`, submission);
+
+      // Create answers for each question
+      for (const question of questionSet.questions) {
+        try {
+          const answerData: any = {
+            submissionId: submission.id,
+            questionId: question.id,
+          };
+
+          // Set the appropriate answer field based on question type
+          switch (question.questionType) {
+            case QuestionType.TEXT:
+              answerData.answerText = user.name;
+              break;
+            case QuestionType.NUMBER:
+              answerData.answerNumber = Math.floor(Math.random() * 100);
+              break;
+            case QuestionType.BOOLEAN:
+              answerData.answerBoolean = 1; // 1 for true, 0 for false
+              break;
+            case QuestionType.CURRENCY:
+              answerData.answerCurrency = Math.floor(Math.random() * 10_000);
+              answerData.currencyType = CurrencyType.USD;
+              break;
+            default:
+              answerData.answerText = "Sample Text";
+          }
+
+          console.log("Creating answer with data:", answerData);
+          await db.answer.create({
+            data: answerData,
+          });
+        } catch (error) {
+          console.error(
+            `Failed to create answer for question ${question.id}:`,
+            error,
+          );
+          throw error; // Re-throw to stop the seeding process
+        }
+      }
+    }
+
+    console.log("🌱 Finished seeding successfully");
+  } catch (error) {
+    console.error("❌ Seeding failed:", error);
+    throw error;
+  }
 });
