@@ -3,6 +3,7 @@ import { defineScript } from "@redwoodjs/sdk/worker";
 import { db, setupDb } from "../db";
 // @ts-ignore
 import { QuestionType, CurrencyType } from "@prisma/client";
+import { startups } from "./data";
 
 export default defineScript(async ({ env }) => {
   try {
@@ -18,25 +19,12 @@ export default defineScript(async ({ env }) => {
       DELETE FROM sqlite_sequence;
     `);
 
+    // Create users from startups data
     await db.user.createMany({
-      data: [
-        {
-          email: "dt@pwv.com",
-          name: "DT",
-        },
-        {
-          email: "david@pwv.com",
-          name: "David",
-        },
-        {
-          email: "tom@pwv.com",
-          name: "Tom",
-        },
-        {
-          email: "jen@pwv.com",
-          name: "Jen",
-        },
-      ],
+      data: startups.map((startup) => ({
+        name: startup.name,
+        email: `founder@${startup.domain}`,
+      })),
     });
 
     await db.questionSet.create({
@@ -134,9 +122,6 @@ export default defineScript(async ({ env }) => {
       },
     });
 
-    // Get all users and create submissions for each
-    const users = await db.user.findMany();
-
     const questionSet = await db.questionSet.findFirst({
       where: { name: "Pitch", versionNumber: 1 },
       include: { questions: true },
@@ -146,72 +131,104 @@ export default defineScript(async ({ env }) => {
       throw new Error("QuestionSet not found");
     }
 
-    // Create submissions for each user
-    for (const user of users) {
-      const submission = await db.submission.create({
+    // Create submissions for each startup
+    for (const startup of startups) {
+      // find user by email
+      const user = await db.user.findFirst({
+        where: { email: `founder@${startup.domain}` },
+      });
+
+      if (!user) {
+        throw new Error(`User not found for ${startup.name}`);
+      }
+
+      await db.submission.create({
         data: {
           userId: user.id,
           questionSetId: questionSet.id,
-          status: "IN_PROGRESS",
+          answers: {
+            create: questionSet.questions.map((question) => {
+              let answerContent = "";
+
+              // Find the submission answer for this question position
+              const submissionAnswer = startup.submission?.find(
+                (q) => q.questionPosition === question.questionPosition,
+              )?.answer;
+
+              // Set answer content based on question position first
+              switch (question.questionPosition) {
+                case 0: // Name
+                  answerContent = submissionAnswer || startup.name;
+                  break;
+                case 1: // Company description
+                  answerContent =
+                    submissionAnswer ||
+                    `${startup.name} is innovating in the ${startup.sector} space.`;
+                  break;
+                case 2: // About founder
+                  answerContent =
+                    submissionAnswer ||
+                    `Experienced founder with background in ${startup.sector}.`;
+                  break;
+                case 3: // Progress
+                  answerContent =
+                    submissionAnswer ||
+                    "Early stage startup with MVP in development.";
+                  break;
+                case 4: // Have you raised outside capital?
+                  answerContent = submissionAnswer
+                    ? String(submissionAnswer === "Yes")
+                    : "false";
+                  break;
+                case 5: // Funding details
+                  answerContent = submissionAnswer || "";
+                  break;
+                case 6: // LinkedIn URL
+                  answerContent =
+                    submissionAnswer ||
+                    `https://linkedin.com/in/${startup.name.toLowerCase().replace(/\s+/g, "-")}`;
+                  break;
+                case 7: // Website URL
+                  answerContent = submissionAnswer
+                    ? `https://${submissionAnswer}`
+                    : `https://${startup.domain}`;
+                  break;
+                case 8: // How heard about PWV
+                  answerContent = submissionAnswer || "";
+                  break;
+                case 9: // Pitch deck file
+                  answerContent =
+                    submissionAnswer ||
+                    `${startup.name.toLowerCase().replace(/\s+/g, "-")}-deck.pdf`;
+                  break;
+                case 10: // Company category
+                  answerContent = submissionAnswer || startup.sector;
+                  break;
+                case 11: // Referral
+                  answerContent = submissionAnswer || "";
+                  break;
+              }
+
+              // Return the answer in the correct format based on question type
+              return {
+                questionId: question.id,
+                ...(question.questionType === QuestionType.TEXT && {
+                  answerText: answerContent,
+                }),
+                ...(question.questionType === QuestionType.BOOLEAN && {
+                  answerBoolean: answerContent === "true" ? 1 : 0,
+                }),
+                ...(question.questionType === QuestionType.URL && {
+                  url: answerContent,
+                }),
+                ...(question.questionType === QuestionType.FILE && {
+                  fileUrl: answerContent,
+                }),
+              };
+            }),
+          },
         },
       });
-
-      console.log(`Created submission for ${user.name}:`, submission);
-
-      // Create answers for each question
-      for (const question of questionSet.questions) {
-        try {
-          const answerData: any = {
-            submissionId: submission.id,
-            questionId: question.id,
-          };
-
-          // Set the appropriate answer field based on question type
-          switch (question.questionType) {
-            case QuestionType.TEXT:
-              answerData.answerText = user.name;
-              break;
-            case QuestionType.NUMBER:
-              answerData.answerNumber = Math.floor(Math.random() * 100);
-              break;
-            case QuestionType.BOOLEAN:
-              answerData.answerBoolean = 1; // 1 for true, 0 for false
-              break;
-            case QuestionType.CURRENCY:
-              answerData.answerCurrency = Math.floor(Math.random() * 10_000);
-              answerData.currencyType = CurrencyType.USD;
-              break;
-            case QuestionType.FILE:
-              answerData.fileUrl = "https://example.com/file.pdf";
-              break;
-            case QuestionType.DATE:
-              answerData.answerDate = new Date();
-              break;
-            case QuestionType.DATETIME:
-              answerData.answerDatetime = new Date();
-              break;
-            case QuestionType.PHONE:
-              answerData.phone = "+1234567890";
-              break;
-            case QuestionType.URL:
-              answerData.url = "https://example.com";
-              break;
-            default:
-              answerData.answerText = "Sample Text";
-          }
-
-          console.log("Creating answer with data:", answerData);
-          await db.answer.create({
-            data: answerData,
-          });
-        } catch (error) {
-          console.error(
-            `Failed to create answer for question ${question.id}:`,
-            error,
-          );
-          throw error; // Re-throw to stop the seeding process
-        }
-      }
     }
 
     console.log("🌱 Finished seeding successfully");
