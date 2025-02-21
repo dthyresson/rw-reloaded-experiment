@@ -4,6 +4,7 @@ import { Document } from "src/Document";
 import { Home } from "src/pages/Home";
 import { List } from "src/pages/submissions/List";
 import { Detail } from "src/pages/submissions/Detail";
+import { Detail as QuestionDetail } from "src/pages/questions/Detail";
 
 import { setupDb } from "./db";
 import { Edit } from "src/pages/submissions/Edit";
@@ -31,6 +32,7 @@ export default defineApp<Context>([
       route<Context>("/:id/edit", Edit),
     ]),
     prefix("/questions", [
+      route<Context>("/:id", QuestionDetail),
       route<Context>("/:id/upload", async ({ request, params, env, ctx }) => {
         if (
           request.method !== "POST" &&
@@ -39,8 +41,12 @@ export default defineApp<Context>([
           return new Response("Method not allowed", { status: 405 });
         }
 
+        console.log("Uploading file for question", params.id);
+
         const formData = await request.formData();
         const file = formData.get("file") as File;
+
+        console.log("File", file);
 
         // Stream the file directly to R2
         const r2ObjectKey = `/submissions/questions/${params.id}/files/${Date.now()}-${file.name}`;
@@ -48,15 +54,20 @@ export default defineApp<Context>([
           httpMetadata: {
             contentType: file.type,
           },
+
         });
 
-        await db.question.upsert({
-          where: { id: params.id },
-          update: {
-            fileUrl: r2ObjectKey,
+        console.log("Updating answer", params.id, "with", r2ObjectKey);
+
+        await db.answer.update({
+          where: {
+            submissionId_questionId: {
+              questionId: params.id,
+              submissionId: "cm7eybh9m000eun0nxdi1mz6d",
+            },
           },
-          create: {
-            id: params.id,
+          data: {
+            answerText: r2ObjectKey,
             fileUrl: r2ObjectKey,
           },
         });
