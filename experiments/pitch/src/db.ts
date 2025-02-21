@@ -5,7 +5,10 @@ import { PrismaD1 } from "@prisma/adapter-d1";
 export let db: PrismaClient;
 
 export const createDbClient = (env: Env) =>
-  new PrismaClient({ adapter: new PrismaD1(env.DB) });
+  new PrismaClient({
+    adapter: new PrismaD1(env.DB),
+    log: ["query", "info", "warn", "error"],
+  });
 
 export const setupDb = async (env: Env) => {
   db = createDbClient(env);

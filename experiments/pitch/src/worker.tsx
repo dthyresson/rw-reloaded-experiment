@@ -9,22 +9,22 @@ import { Detail as QuestionDetail } from "src/pages/questions/Detail";
 import { setupDb } from "./db";
 import { Edit } from "src/pages/submissions/Edit";
 import { db } from "@/db";
+import { RouteContext } from "@redwoodjs/sdk/router";
 
 type Context = {
   id: string;
 };
-
-// type RouteContext = {};
 
 export default defineApp<Context>([
   async ({ ctx, env, request }) => {
     await setupDb(env);
   },
   layout(Document, [
-    index<Context>([Home]),
+    index<Context>([List]),
     route("/hello", function ({ ctx }: { ctx: Context }) {
       return new Response("Hello, world!");
     }),
+    route("/home", [Home]),
     prefix("/submissions", [
       // @ts-ignore
       route<Context>("/", List),
@@ -54,7 +54,6 @@ export default defineApp<Context>([
           httpMetadata: {
             contentType: file.type,
           },
-
         });
 
         console.log("Updating answer", params.id, "with", r2ObjectKey);
@@ -63,7 +62,7 @@ export default defineApp<Context>([
           where: {
             submissionId_questionId: {
               questionId: params.id,
-              submissionId: "cm7eybh9m000eun0nxdi1mz6d",
+              submissionId: "cm7dvjo6n007wz10nvyz2o1fq",
             },
           },
           data: {
@@ -78,6 +77,40 @@ export default defineApp<Context>([
             "Content-Type": "application/json",
           },
         });
+      }),
+      route("/files/*", async ({ request, params, env }) => {
+        try {
+          console.log("Serving file", params);
+          const key = `/${params["$0"]}`;
+          console.log("Key", key);
+          const object = await env.R2.get(key);
+          console.log("Object", object);
+
+          if (!object) {
+            return new Response("File not found", { status: 404 });
+          }
+
+          const headers = new Headers();
+          headers.set(
+            "Content-Type",
+            object.httpMetadata?.contentType || "application/octet-stream",
+          );
+
+          // For direct viewing in browser (like images)
+          if (request.headers.get("Accept")?.includes("image/")) {
+            return new Response(object.body, { headers });
+          }
+
+          // For file downloads
+          headers.set(
+            "Content-Disposition",
+            `attachment; filename="${key.split("/").pop()}"`,
+          );
+          return new Response(object.body, { headers });
+        } catch (error) {
+          console.error("Error serving file:", error);
+          return new Response("Error serving file", { status: 500 });
+        }
       }),
     ]),
   ]),
