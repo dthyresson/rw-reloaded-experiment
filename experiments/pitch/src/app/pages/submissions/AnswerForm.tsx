@@ -11,8 +11,10 @@ import {
   CardTitle,
 } from "@/app/components/ui/card";
 import { updateAnswer } from "@/app/services/submissions";
-import { toast, Toaster } from "sonner";
+import { Toaster } from "@/app/components/ui/sonner";
+import { toast } from "sonner";
 import { link } from "@/app/shared/links";
+
 export function AnswerForm({
   submissionId,
   answerId,
@@ -28,15 +30,23 @@ export function AnswerForm({
   const [isSaving, setIsSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    console.log("handleSubmit", theAnswerText);
     e.preventDefault();
     if (!theAnswerText) return;
 
     setIsSaving(true);
     try {
       await updateAnswer(answerId, theAnswerText);
-      toast.success("Answer saved successfully");
-      window.location.href = link("/submissions/:id", { id: submissionId });
+      toast.success("Answer saved successfully", {
+        description: `Answer updated from "${answerText}" to "${theAnswerText}"`,
+        action: {
+          label: "Back to submission",
+          onClick: () => {
+            window.location.href = link("/submissions/:id", {
+              id: submissionId,
+            });
+          },
+        },
+      });
     } catch (error) {
       console.error("Failed to update answer:", error);
       toast.error("Failed to save answer");
