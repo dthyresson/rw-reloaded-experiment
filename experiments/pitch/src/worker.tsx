@@ -30,7 +30,7 @@ export default defineApp<Context>([
       route<Context>("/:id", Detail),
       route<Context>("/:id/edit", Edit),
     ]),
-    prefix("/answers", [
+    prefix("/questions", [
       route<Context>("/:id/upload", async ({ request, params, env, ctx }) => {
         if (
           request.method !== "POST" &&
@@ -43,16 +43,20 @@ export default defineApp<Context>([
         const file = formData.get("file") as File;
 
         // Stream the file directly to R2
-        const r2ObjectKey = `/submissions/${params.id}/files/${Date.now()}-${file.name}`;
+        const r2ObjectKey = `/submissions/questions/${params.id}/files/${Date.now()}-${file.name}`;
         await env.R2.put(r2ObjectKey, file.stream(), {
           httpMetadata: {
             contentType: file.type,
           },
         });
 
-        await db.answers.update({
+        await db.question.upsert({
           where: { id: params.id },
-          data: {
+          update: {
+            fileUrl: r2ObjectKey,
+          },
+          create: {
+            id: params.id,
             fileUrl: r2ObjectKey,
           },
         });
