@@ -147,7 +147,7 @@ export default defineScript(async ({ env }) => {
           userId: user.id,
           questionSetId: questionSet.id,
           answers: {
-            create: questionSet.questions.map((question) => {
+            create: questionSet.questions.map((question: any) => {
               let answerContent = "";
 
               // Find the submission answer for this question position
