@@ -19,8 +19,8 @@ database_name = "pwv-pitch-1"
 database_id = "23b0c328-86e5-4f6d-a192-1f32bb28e08f"
 
 [[r2_buckets]]
-bucket_name = "pitch"
-binding = "R2"
+bucket_name = "pwv-pitch"
+binding = "pwv_pitch"
 
 [durable_objects]
 bindings = [

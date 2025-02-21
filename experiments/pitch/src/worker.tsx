@@ -7,12 +7,13 @@ import { Detail } from "src/pages/submissions/Detail";
 
 import { setupDb } from "./db";
 import { Edit } from "src/pages/submissions/Edit";
+import { db } from "@/db";
 
 type Context = {
   id: string;
 };
 
-type RouteContext = {};
+// type RouteContext = {};
 
 export default defineApp<Context>([
   async ({ ctx, env, request }) => {
@@ -28,6 +29,41 @@ export default defineApp<Context>([
       route<Context>("/", List),
       route<Context>("/:id", Detail),
       route<Context>("/:id/edit", Edit),
+    ]),
+    prefix("/answers", [
+      route<Context>("/:id/upload", async ({ request, params, env, ctx }) => {
+        if (
+          request.method !== "POST" &&
+          !request.headers.get("content-type")?.includes("multipart/form-data")
+        ) {
+          return new Response("Method not allowed", { status: 405 });
+        }
+
+        const formData = await request.formData();
+        const file = formData.get("file") as File;
+
+        // Stream the file directly to R2
+        const r2ObjectKey = `/submissions/${params.id}/files/${Date.now()}-${file.name}`;
+        await env.R2.put(r2ObjectKey, file.stream(), {
+          httpMetadata: {
+            contentType: file.type,
+          },
+        });
+
+        await db.answers.update({
+          where: { id: params.id },
+          data: {
+            fileUrl: r2ObjectKey,
+          },
+        });
+
+        return new Response(JSON.stringify({ key: r2ObjectKey }), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }),
     ]),
   ]),
 ]);
