@@ -26,3 +26,20 @@ export async function allSubmissions() {
     },
   });
 }
+
+export async function getAnswer(id: string) {
+  return await db.answer.findUnique({
+    where: { id },
+    include: {
+      question: true,
+      submission: true,
+    },
+  });
+}
+
+export async function updateAnswer(id: string, answerText: string) {
+  return await db.answer.update({
+    where: { id },
+    data: { answerText },
+  });
+}

@@ -6,6 +6,7 @@ import { List } from "src/pages/submissions/List";
 import { Detail } from "src/pages/submissions/Detail";
 
 import { setupDb } from "./db";
+import { Edit } from "src/pages/submissions/Edit";
 
 type Context = {
   id: string;
@@ -26,6 +27,7 @@ export default defineApp<Context>([
       // @ts-ignore
       route<Context>("/", List),
       route<Context>("/:id", Detail),
+      route<Context>("/:id/edit", Edit),
     ]),
   ]),
 ]);
