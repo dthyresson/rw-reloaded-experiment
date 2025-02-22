@@ -2,7 +2,7 @@
 import { defineScript } from "@redwoodjs/sdk/worker";
 import { db, setupDb } from "../db";
 // @ts-ignore
-import { QuestionType, CurrencyType } from "@prisma/client";
+import { QuestionType } from "@prisma/client";
 import { startups } from "./data";
 
 export default defineScript(async ({ env }) => {
@@ -146,6 +146,7 @@ export default defineScript(async ({ env }) => {
         data: {
           userId: user.id,
           questionSetId: questionSet.id,
+          status: "COMPLETED",
           answers: {
             create: questionSet.questions.map((question: any) => {
               let answerContent = "";

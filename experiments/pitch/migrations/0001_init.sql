@@ -90,7 +90,7 @@ CREATE UNIQUE INDEX "QuestionSet_name_versionNumber_key" ON "QuestionSet"("name"
 CREATE UNIQUE INDEX "Question_questionSetId_questionPosition_key" ON "Question"("questionSetId", "questionPosition");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Submission_userId_status_key" ON "Submission"("userId", "status");
+CREATE UNIQUE INDEX "Submission_userId_questionSetId_status_key" ON "Submission"("userId", "questionSetId", "status");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Answer_submissionId_questionId_key" ON "Answer"("submissionId", "questionId");

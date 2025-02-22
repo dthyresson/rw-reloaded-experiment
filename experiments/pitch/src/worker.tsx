@@ -10,6 +10,7 @@ import { setupDb } from "./db";
 import { Edit } from "src/pages/submissions/Edit";
 import { db } from "@/db";
 import { RouteContext } from "@redwoodjs/sdk/router";
+import { Start as WizardStart } from "./app/pages/wizard/Start";
 
 type Context = {
   id: string;
@@ -114,4 +115,22 @@ export default defineApp<Context>([
       }),
     ]),
   ]),
+  route("/wizard/start", [WizardStart]),
+  route("/api/submissions/:id/questions", async ({ params }) => {
+    const submission = await db.submission.findUnique({
+      where: { id: params.id },
+      include: { questionSet: { include: { questions: true } } },
+    });
+    return new Response(JSON.stringify(submission.questionSet.questions));
+  }),
+  route("/api/submissions/:id/complete", async ({ params }) => {
+    await db.submission.update({
+      where: { id: params.id },
+      data: {
+        status: "COMPLETED",
+        completedAt: new Date(),
+      },
+    });
+    return new Response(null, { status: 200 });
+  }),
 ]);
