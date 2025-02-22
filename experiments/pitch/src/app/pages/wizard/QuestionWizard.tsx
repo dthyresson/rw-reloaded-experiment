@@ -62,14 +62,18 @@ export function QuestionWizard({
       {showIntro ? (
         <Card>
           <CardHeader>
-            <h2 className="text-2xl font-bold">Welcome to the Pitch Wizard</h2>
+            <h2 className="text-2xl font-bold">Let's create your pitch</h2>
             <p className="text-muted-foreground">
               We'll guide you through a series of questions to help create your
               pitch.
             </p>
           </CardHeader>
-          <CardContent>
-            <p>You'll be answering {questions.length} questions in total.</p>
+          <CardContent className="space-y-2">
+            <p>
+              You'll be answering {questions.length} questions in total. You can
+              save your progress at any time and continue later.
+            </p>
+            <p>This should take no more than 10 minutes.</p>
           </CardContent>
           <CardFooter>
             <Button onClick={() => setShowIntro(false)}>Start</Button>
@@ -80,6 +84,15 @@ export function QuestionWizard({
           <CardHeader>
             <div className="text-sm text-muted-foreground">
               Question {currentIndex + 1} of {questions.length}
+              {questions.length - currentIndex <= 3 && (
+                <span className="ml-2">
+                  {questions.length - currentIndex === 3 &&
+                    "- Just 3 more to go!"}
+                  {questions.length - currentIndex === 2 &&
+                    "- Almost there, 2 to go!"}
+                  {questions.length - currentIndex === 1 && "- Last one!"}
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-1">
               <h2 className="text-2xl font-bold">
