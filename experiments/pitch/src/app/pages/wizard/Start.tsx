@@ -17,6 +17,13 @@ async function getFirstQuestionSetId() {
 export async function Start() {
   const DEMO_USER_ID = await getFirstUserId();
   const DEMO_QUESTION_SET_ID = await getFirstQuestionSetId();
+
+  // Fetch questions for the question set
+  const questions = await db.question.findMany({
+    where: { questionSetId: DEMO_QUESTION_SET_ID },
+    orderBy: { questionPosition: "asc" },
+  });
+
   // Check for existing in-progress submission
   const existingSubmission = await db.submission.findFirst({
     where: {
@@ -27,7 +34,6 @@ export async function Start() {
   });
 
   if (!existingSubmission) {
-    // Create new submission
     const submission = await db.submission.create({
       data: {
         userId: DEMO_USER_ID,
@@ -36,7 +42,11 @@ export async function Start() {
       },
     });
     return (
-      <QuestionWizard submissionId={submission.id} currentQuestionIndex={0} />
+      <QuestionWizard
+        submissionId={submission.id}
+        currentQuestionIndex={0}
+        questions={questions}
+      />
     );
   }
 
@@ -44,6 +54,7 @@ export async function Start() {
     <QuestionWizard
       submissionId={existingSubmission.id}
       currentQuestionIndex={0}
+      questions={questions}
     />
   );
 }

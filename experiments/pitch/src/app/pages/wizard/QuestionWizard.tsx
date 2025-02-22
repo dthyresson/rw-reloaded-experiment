@@ -8,24 +8,21 @@ import {
   CardFooter,
 } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
-import { Input } from "@/app/components/ui/input";
 import { QuestionForm } from "./QuestionForm";
-import { useQuestionSet } from "./hooks/useQuestionSet";
 
 interface QuestionWizardProps {
   submissionId: string;
   currentQuestionIndex: number;
+  questions: any[]; // Update this type to match your Question type
 }
 
 export function QuestionWizard({
   submissionId,
   currentQuestionIndex,
+  questions,
 }: QuestionWizardProps) {
   const [currentIndex, setCurrentIndex] = useState(currentQuestionIndex);
-  const { questions, isLoading, error } = useQuestionSet(submissionId);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading questions</div>;
   if (!questions?.length) return <div>No questions found</div>;
 
   const currentQuestion = questions[currentIndex];
@@ -38,6 +35,7 @@ export function QuestionWizard({
         method: "POST",
       });
       // router.push(`/submissions/${submissionId}`);
+      window.location.href = `/submissions/${submissionId}`;
     } else {
       setCurrentIndex((prev) => prev + 1);
     }

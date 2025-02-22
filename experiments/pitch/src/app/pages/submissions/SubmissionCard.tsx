@@ -17,10 +17,11 @@ export function SubmissionCard({ submission }: { submission: any }) {
             <span className="text-sm font-medium text-gray-600">
               {answer.question.questionText}
             </span>
-            <div className="text-gray-800">
+            <div className="text-gray-800 whitespace-pre-wrap break-words">
               {(() => {
                 switch (answer.question.questionType) {
                   case "TEXT":
+                  case "TEXT_AREA":
                     return answer.answerText;
                   case "NUMBER":
                     return answer.answerNumber;

@@ -38,15 +38,11 @@ export function AnswerForm({
       await updateAnswer(answerId, theAnswerText);
       toast.success("Answer saved successfully", {
         description: `Answer updated from "${answerText}" to "${theAnswerText}"`,
-        action: {
-          label: "Back to submission",
-          onClick: () => {
-            window.location.href = link("/submissions/:id", {
-              id: submissionId,
-            });
-          },
-        },
       });
+      // timeout to allow toast to appear
+      setTimeout(() => {
+        window.location.href = `/submissions/${submissionId}`;
+      }, 1000);
     } catch (error) {
       console.error("Failed to update answer:", error);
       toast.error("Failed to save answer");
