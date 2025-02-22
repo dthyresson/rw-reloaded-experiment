@@ -1,28 +1,63 @@
 import { link } from "src/shared/links";
 import { Card, CardContent, CardHeader } from "@/app/components/ui/card";
+import { format, isToday, isYesterday, differenceInHours } from "date-fns";
 
 export function SubmissionCard({ submission }: { submission: any }) {
   if (!submission) return null;
 
+  const formatDateTime = (date: Date) => {
+    const now = new Date();
+    const dateObj = new Date(date);
+    const hours = differenceInHours(now, dateObj);
+
+    if (hours < 2) {
+      return format(dateObj, "'at' p");
+    } else if (isToday(dateObj)) {
+      return format(dateObj, "'Today at' p");
+    } else if (isYesterday(dateObj)) {
+      return format(dateObj, "'Yesterday at' p");
+    } else {
+      return format(dateObj, "EEEE MMM d 'at' p");
+    }
+  };
+
   return (
     <Card>
-      <CardHeader>
-        <a href={link("/submissions/:id", { id: submission.id })}>
-          Submitted by {submission.user.name} at{" "}
-          {submission.updatedAt.toLocaleString()}
+      <CardHeader className="flex flex-col gap-2">
+        <a
+          href={link("/submissions/:id", { id: submission.id })}
+          className="text-2xl font-medium hover:text-blue-600 transition-colors"
+        >
+          {submission.user.name} Pitch Submission
         </a>
-        {submission.status === "COMPLETED" && (
-          <span className="text-xs text-gray-500 mx-4">
-            Completed at {submission.completedAt.toLocaleString()}
+        <div className="flex items-center text-sm text-gray-500">
+          <span>
+            Submitted {formatDateTime(new Date(submission.updatedAt))}
           </span>
-        )}
+          {submission.status === "COMPLETED" && (
+            <>
+              <span className="mx-2">•</span>
+              <span>
+                Completed {formatDateTime(new Date(submission.completedAt))}
+              </span>
+            </>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {submission.answers.map((answer: any) => (
-          <div key={answer.id} className="flex flex-col space-y-1">
-            <span className="text-sm font-medium text-gray-600">
-              {answer.question.questionText}
-            </span>
+          <div
+            key={answer.id}
+            className="flex flex-col space-y-1 border-b pb-4"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-600">
+                {answer.question.questionPosition + 1}
+              </span>
+              <span className="text-lg font-bold text-gray-600">
+                {answer.question.questionText}
+              </span>
+            </div>
             <div className="text-gray-800 whitespace-pre-wrap break-words">
               {(() => {
                 switch (answer.question.questionType) {
@@ -48,9 +83,13 @@ export function SubmissionCard({ submission }: { submission: any }) {
                       </a>
                     ) : null;
                   case "DATE":
-                    return answer.answerDate?.toLocaleDateString();
+                    return answer.answerDate
+                      ? format(new Date(answer.answerDate), "PP")
+                      : null;
                   case "DATETIME":
-                    return answer.answerDatetime?.toLocaleString();
+                    return answer.answerDatetime
+                      ? format(new Date(answer.answerDatetime), "PPp")
+                      : null;
                   case "PHONE":
                     return answer.phone;
                   case "URL":
