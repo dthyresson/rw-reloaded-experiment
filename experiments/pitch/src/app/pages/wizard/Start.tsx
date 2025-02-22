@@ -37,6 +37,10 @@ export async function Start() {
 
   // check for completed submission
   const completedSubmission = await db.submission.findFirst({
+    omit: {
+      raw: true,
+      enriched: true,
+    },
     where: {
       userId: DEMO_USER_ID,
       questionSetId: DEMO_QUESTION_SET_ID,

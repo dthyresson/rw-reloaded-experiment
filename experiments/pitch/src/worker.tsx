@@ -148,6 +148,29 @@ export default defineApp<Context>([
           completedAt: new Date(),
         },
       });
+
+      //here i want to query all the submission's questions and answers
+      const submission = await db.submission.findUnique({
+        where: { id: params.id },
+        include: {
+          questionSet: {
+            include: {
+              questions: {
+                include: { answers: { include: { question: true } } },
+              },
+            },
+          },
+        },
+      });
+
+      // the save to submission.raw the questions and answers as json
+      await db.submission.update({
+        where: { id: params.id },
+        data: {
+          raw: submission,
+        },
+      });
+
       return new Response(null, { status: 200 });
     } catch (error) {
       console.error("Error completing submission", error);

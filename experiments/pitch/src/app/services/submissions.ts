@@ -19,6 +19,10 @@ export async function getSubmission(id: string) {
 
 export async function allSubmissions() {
   return await db.submission.findMany({
+    omit: {
+      raw: true,
+      enriched: true,
+    },
     include: {
       user: true,
       questionSet: true,
@@ -33,6 +37,10 @@ export async function allSubmissions() {
 
 export async function getLatestSubmissions() {
   return await db.submission.findMany({
+    omit: {
+      raw: true,
+      enriched: true,
+    },
     orderBy: { updatedAt: "desc" },
     include: {
       user: true,

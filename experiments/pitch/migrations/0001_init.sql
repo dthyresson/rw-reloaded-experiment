@@ -43,6 +43,8 @@ CREATE TABLE "Submission" (
     "userId" TEXT NOT NULL,
     "questionSetId" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'IN_PROGRESS',
+    "raw" JSONB,
+    "enriched" JSONB,
     CONSTRAINT "Submission_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Submission_questionSetId_fkey" FOREIGN KEY ("questionSetId") REFERENCES "QuestionSet" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
