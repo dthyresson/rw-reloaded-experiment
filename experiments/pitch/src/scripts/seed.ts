@@ -113,9 +113,10 @@ export default defineScript(async ({ env }) => {
             },
             {
               questionText: "Were you referred by someone?",
+              description: "Perhaps a VC or a founder?",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 11,
-              isRequired: true,
+              isRequired: false,
             },
           ],
         },

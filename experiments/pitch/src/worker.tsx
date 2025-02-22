@@ -140,13 +140,18 @@ export default defineApp<Context>([
     },
   ),
   route("/api/submissions/:id/complete", async ({ params }) => {
-    await db.submission.update({
-      where: { id: params.id },
-      data: {
-        status: "COMPLETED",
-        completedAt: new Date(),
-      },
-    });
-    return new Response(null, { status: 200 });
+    try {
+      await db.submission.update({
+        where: { id: params.id },
+        data: {
+          status: "COMPLETED",
+          completedAt: new Date(),
+        },
+      });
+      return new Response(null, { status: 200 });
+    } catch (error) {
+      console.error("Error completing submission", error);
+      return new Response("Error completing submission", { status: 500 });
+    }
   }),
 ]);

@@ -8,6 +8,7 @@ import { saveAnswer } from "./functions";
 // @ts-ignore
 import type { Question } from "@prisma/client";
 import { Label } from "@/app/components/ui/label";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 interface QuestionFormProps {
   question: Question;
@@ -69,10 +70,6 @@ export function QuestionForm({
   };
 
   const renderInput = () => {
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
-
     const inputElement = (() => {
       switch (question.questionType) {
         case "TEXT":
@@ -171,7 +168,7 @@ export function QuestionForm({
       {renderInput()}
       <Button
         type="submit"
-        disabled={isSubmitting || !value || isLoading}
+        disabled={isSubmitting || (question.isRequired && !value) || isLoading}
         className="w-full"
       >
         {isSubmitting ? "Saving..." : "Continue"}

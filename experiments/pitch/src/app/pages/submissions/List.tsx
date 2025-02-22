@@ -10,6 +10,23 @@ import {
 } from "@/app/components/ui/table";
 import { link } from "@/app/shared/links";
 import { formatDistanceToNow, format, differenceInHours } from "date-fns";
+import { cn } from "@/app/lib/utils";
+
+const SubmissionStatus = ({ status }: { status: string }) => (
+  <span
+    className={cn(
+      "inline-block px-2 py-1 text-sm font-medium rounded-md",
+      status === "COMPLETED" && "bg-green-500 text-green-50",
+      status === "IN_PROGRESS" && "bg-yellow-500 text-yellow-50",
+      "bg-blue-500 text-blue-50", // default state
+    )}
+  >
+    {status
+      .split("_")
+      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+      .join(" ")}
+  </span>
+);
 
 export async function List() {
   const submissions = await getLatestSubmissions();
@@ -38,7 +55,7 @@ export async function List() {
         <TableHeader>
           <TableRow>
             <TableHead>By</TableHead>
-            <TableHead>Question Set</TableHead>
+            <TableHead>Submission</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Updated</TableHead>
             <TableHead>Status</TableHead>
@@ -81,7 +98,9 @@ export async function List() {
                     : formatDistanceToNow(date, { addSuffix: true });
                 })()}
               </TableCell>
-              <TableCell>{submission.status}</TableCell>
+              <TableCell>
+                <SubmissionStatus status={submission.status} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
