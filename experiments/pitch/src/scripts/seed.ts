@@ -36,6 +36,7 @@ export default defineScript(async ({ env }) => {
           create: [
             {
               questionText: "What is your name?",
+              placeholder: "Hi!",
               questionType: QuestionType.TEXT,
               questionPosition: 0,
               isRequired: true,
@@ -44,13 +45,15 @@ export default defineScript(async ({ env }) => {
               questionText: "Tell us about your company, product, or idea.",
               description:
                 "Provide a clear and concise overview of what you're working on",
+              placeholder: "We're working on ...",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 1,
               isRequired: true,
             },
             {
-              questionText: "Tell us about yourself.",
+              questionText: "Tell us about yourself and your team.",
               description: "Who are you and why are you working on this?",
+              placeholder: "We're a team of ...",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 2,
               isRequired: true,
@@ -58,65 +61,57 @@ export default defineScript(async ({ env }) => {
             {
               questionText: "How far along are you?",
               description:
-                "Tell us about your journey so far and how PWV can help. Tell us about any customers.",
+                "Tell us about your journey so far and how PWV can help. When did you start? Tell us about any customers.",
+              placeholder: "We've seen solid traction ...",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 3,
               isRequired: true,
             },
             {
-              questionText: "Have you raised outside capital?",
-              questionType: QuestionType.BOOLEAN,
+              questionText:
+                "Have you raised? If so, from and what were the round and terms?",
+              description:
+                "If you have raised, please share the details. If not, please share your plans.",
+              placeholder: "We're raising a seed round ...",
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 4,
               isRequired: true,
             },
             {
-              questionText:
-                "Who have you raised from and what were the round and terms?",
-              questionType: QuestionType.TEXT_AREA,
-              questionPosition: 5,
-              isRequired: true,
-            },
-            {
               questionText: "Where can we find you on LinkedIn?",
+              description:
+                "This helps us connect with you. Or another social profile you'd like to share.",
+              placeholder: "https://linkedin.com/in/...",
               questionType: QuestionType.URL, // Note: Should be URL if available in schema
-              questionPosition: 6,
+              questionPosition: 5,
               isRequired: false,
             },
             {
               questionText:
                 "Feel free to share your website here if you have one.",
+              description:
+                "We know you might still be in stealth mode, but if you have a website, we'd love to see it.",
+              placeholder: "https://...",
               questionType: QuestionType.URL, // Note: Should be URL if available in schema
-              questionPosition: 7,
+              questionPosition: 6,
               isRequired: false,
             },
             {
               questionText: "How did you hear about PWV?",
-              description: "Who do you know that we might know?",
+              description:
+                "Who do you know that we might know? Were you referred by someone?",
               questionType: QuestionType.TEXT_AREA,
-              questionPosition: 8,
+              questionPosition: 7,
               isRequired: true,
             },
             {
               questionText:
                 "Please attach any supporting files, like a deck, demo, etc.",
-              questionType: QuestionType.FILE, // Note: Should be FILE if available in schema
-              questionPosition: 9,
-              isRequired: true,
-            },
-            {
-              questionText: "How would you categorize your company?",
               description:
-                "Select the category that best describes your company",
-              questionType: QuestionType.TEXT,
-              questionPosition: 10,
+                "We'll use this to help us understand your company better. Videos are great too!",
+              questionType: QuestionType.FILE, // Note: Should be FILE if available in schema
+              questionPosition: 8,
               isRequired: true,
-            },
-            {
-              questionText: "Were you referred by someone?",
-              description: "Perhaps a VC or a founder?",
-              questionType: QuestionType.TEXT_AREA,
-              questionPosition: 11,
-              isRequired: false,
             },
           ],
         },
