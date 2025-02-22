@@ -14,12 +14,14 @@ interface QuestionFormProps {
   question: Question;
   submissionId: string;
   onComplete: () => void;
+  isLastQuestion?: boolean;
 }
 
 export function QuestionForm({
   question,
   submissionId,
   onComplete,
+  isLastQuestion = false,
 }: QuestionFormProps) {
   const [value, setValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -171,7 +173,7 @@ export function QuestionForm({
         disabled={isSubmitting || (question.isRequired && !value) || isLoading}
         className="w-full"
       >
-        {isSubmitting ? "Saving..." : "Continue"}
+        {isSubmitting ? "Saving..." : isLastQuestion ? "Submit" : "Continue →"}
       </Button>
     </form>
   );

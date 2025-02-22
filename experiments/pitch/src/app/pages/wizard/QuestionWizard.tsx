@@ -23,6 +23,7 @@ export function QuestionWizard({
   questions,
 }: QuestionWizardProps) {
   const [currentIndex, setCurrentIndex] = useState(currentQuestionIndex);
+  const [showIntro, setShowIntro] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!questions?.length) return <div>No questions found</div>;
@@ -58,7 +59,23 @@ export function QuestionWizard({
 
   return (
     <div className="container max-w-2xl mx-auto py-8">
-      {!isSubmitting && (
+      {showIntro ? (
+        <Card>
+          <CardHeader>
+            <h2 className="text-2xl font-bold">Welcome to the Pitch Wizard</h2>
+            <p className="text-muted-foreground">
+              We'll guide you through a series of questions to help create your
+              pitch.
+            </p>
+          </CardHeader>
+          <CardContent>
+            <p>You'll be answering {questions.length} questions in total.</p>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={() => setShowIntro(false)}>Start</Button>
+          </CardFooter>
+        </Card>
+      ) : !isSubmitting ? (
         <Card>
           <CardHeader>
             <div className="text-sm text-muted-foreground">
@@ -81,6 +98,7 @@ export function QuestionWizard({
                 question={currentQuestion}
                 submissionId={submissionId}
                 onComplete={handleNext}
+                isLastQuestion={isLastQuestion}
               />
             )}
           </CardContent>
@@ -94,8 +112,7 @@ export function QuestionWizard({
             </Button>
           </CardFooter>
         </Card>
-      )}
-      {isSubmitting && (
+      ) : (
         <div className="flex items-center justify-center h-full">
           <div className="flex items-center space-x-4">Submitting...</div>
         </div>

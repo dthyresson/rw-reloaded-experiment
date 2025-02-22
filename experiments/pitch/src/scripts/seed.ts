@@ -36,6 +36,7 @@ export default defineScript(async ({ env }) => {
           create: [
             {
               questionText: "What is your name?",
+              description: "What should we call you?",
               placeholder: "Hi!",
               questionType: QuestionType.TEXT,
               questionPosition: 0,
@@ -106,127 +107,136 @@ export default defineScript(async ({ env }) => {
             },
             {
               questionText:
-                "Please attach any supporting files, like a deck, demo, etc.",
+                "Please attach any supporting files, like a pitchdeck, demo, etc.",
               description:
                 "We'll use this to help us understand your company better. Videos are great too!",
               questionType: QuestionType.FILE, // Note: Should be FILE if available in schema
               questionPosition: 8,
               isRequired: true,
             },
+            {
+              questionText: "What else should we know?",
+              description:
+                "Anything else you'd like to share with us to help us understand your company better.",
+              placeholder: "Also, we're ...",
+              questionType: QuestionType.TEXT_AREA,
+              questionPosition: 9,
+              isRequired: false,
+            },
           ],
         },
       },
     });
 
-    const questionSet = await db.questionSet.findFirst({
-      where: { name: "Pitch", versionNumber: 1 },
-      include: { questions: true },
-    });
+    // const questionSet = await db.questionSet.findFirst({
+    //   where: { name: "Pitch", versionNumber: 1 },
+    //   include: { questions: true },
+    // });
 
-    if (!questionSet) {
-      throw new Error("QuestionSet not found");
-    }
+    // if (!questionSet) {
+    //   throw new Error("QuestionSet not found");
+    // }
 
-    // Create submissions for each startup
-    for (const startup of startups) {
-      // find user by email
-      const user = await db.user.findFirst({
-        where: { email: `founder@${startup.domain}` },
-      });
+    // // Create submissions for each startup
+    // for (const startup of startups) {
+    //   // find user by email
+    //   const user = await db.user.findFirst({
+    //     where: { email: `founder@${startup.domain}` },
+    //   });
 
-      if (!user) {
-        throw new Error(`User not found for ${startup.name}`);
-      }
+    //   if (!user) {
+    //     throw new Error(`User not found for ${startup.name}`);
+    //   }
 
-      await db.submission.create({
-        data: {
-          userId: user.id,
-          questionSetId: questionSet.id,
-          status: "COMPLETED",
-          answers: {
-            create: questionSet.questions.map((question: any) => {
-              let answerContent = "";
+    //   await db.submission.create({
+    //     data: {
+    //       userId: user.id,
+    //       questionSetId: questionSet.id,
+    //       status: "COMPLETED",
+    //       answers: {
+    //         create: questionSet.questions.map((question: any) => {
+    //           let answerContent = "";
 
-              // Find the submission answer for this question position
-              const submissionAnswer = startup.submission?.find(
-                (q) => q.questionPosition === question.questionPosition,
-              )?.answer;
+    //           // Find the submission answer for this question position
+    //           const submissionAnswer = startup.submission?.find(
+    //             (q) => q.questionPosition === question.questionPosition,
+    //           )?.answer;
 
-              // Set answer content based on question position first
-              switch (question.questionPosition) {
-                case 0: // Name
-                  answerContent = submissionAnswer || startup.name;
-                  break;
-                case 1: // Company description
-                  answerContent =
-                    submissionAnswer ||
-                    `${startup.name} is innovating in the ${startup.sector} space.`;
-                  break;
-                case 2: // About founder
-                  answerContent =
-                    submissionAnswer ||
-                    `Experienced founder with background in ${startup.sector}.`;
-                  break;
-                case 3: // Progress
-                  answerContent =
-                    submissionAnswer ||
-                    "Early stage startup with MVP in development.";
-                  break;
-                case 4: // Have you raised outside capital?
-                  answerContent = submissionAnswer
-                    ? String(submissionAnswer === "Yes")
-                    : "false";
-                  break;
-                case 5: // Funding details
-                  answerContent = submissionAnswer || "";
-                  break;
-                case 6: // LinkedIn URL
-                  answerContent =
-                    submissionAnswer ||
-                    `https://linkedin.com/in/${startup.name.toLowerCase().replace(/\s+/g, "-")}`;
-                  break;
-                case 7: // Website URL
-                  answerContent = submissionAnswer
-                    ? `https://${submissionAnswer}`
-                    : `https://${startup.domain}`;
-                  break;
-                case 8: // How heard about PWV
-                  answerContent = submissionAnswer || "";
-                  break;
-                case 9: // Pitch deck file
-                  answerContent =
-                    submissionAnswer ||
-                    `${startup.name.toLowerCase().replace(/\s+/g, "-")}-deck.pdf`;
-                  break;
-                case 10: // Company category
-                  answerContent = submissionAnswer || startup.sector;
-                  break;
-                case 11: // Referral
-                  answerContent = submissionAnswer || "";
-                  break;
-              }
+    //           // Set answer content based on question position first
+    //           switch (question.questionPosition) {
+    //             case 0: // Name
+    //               answerContent = submissionAnswer || startup.name;
+    //               break;
+    //             case 1: // Company description
+    //               answerContent =
+    //                 submissionAnswer ||
+    //                 `${startup.name} is innovating in the ${startup.sector} space.`;
+    //               break;
+    //             case 2: // About founder
+    //               answerContent =
+    //                 submissionAnswer ||
+    //                 `Experienced founder with background in ${startup.sector}.`;
+    //               break;
+    //             case 3: // Progress
+    //               answerContent =
+    //                 submissionAnswer ||
+    //                 "Early stage startup with MVP in development.";
+    //               break;
+    //             case 4: // Have you raised outside capital?
+    //               answerContent = submissionAnswer
+    //                 ? String(submissionAnswer === "Yes")
+    //                 : "false";
+    //               break;
+    //             case 5: // Funding details
+    //               answerContent = submissionAnswer || "";
+    //               break;
+    //             case 6: // LinkedIn URL
+    //               answerContent =
+    //                 submissionAnswer ||
+    //                 `https://linkedin.com/in/${startup.name.toLowerCase().replace(/\s+/g, "-")}`;
+    //               break;
+    //             case 7: // Website URL
+    //               answerContent = submissionAnswer
+    //                 ? `https://${submissionAnswer}`
+    //                 : `https://${startup.domain}`;
+    //               break;
+    //             case 8: // How heard about PWV
+    //               answerContent = submissionAnswer || "";
+    //               break;
+    //             case 9: // Pitch deck file
+    //               answerContent =
+    //                 submissionAnswer ||
+    //                 `${startup.name.toLowerCase().replace(/\s+/g, "-")}-deck.pdf`;
+    //               break;
+    //             case 10: // Company category
+    //               answerContent = submissionAnswer || startup.sector;
+    //               break;
+    //             case 11: // Referral
+    //               answerContent = submissionAnswer || "";
+    //               break;
+    //           }
 
-              // Return the answer in the correct format based on question type
-              return {
-                questionId: question.id,
-                ...(question.questionType === QuestionType.TEXT && {
-                  answerText: answerContent,
-                }),
-                ...(question.questionType === QuestionType.BOOLEAN && {
-                  answerBoolean: answerContent === "true" ? 1 : 0,
-                }),
-                ...(question.questionType === QuestionType.URL && {
-                  url: answerContent,
-                }),
-                ...(question.questionType === QuestionType.FILE && {
-                  fileUrl: answerContent,
-                }),
-              };
-            }),
-          },
-        },
-      });
-    }
+    //           // Return the answer in the correct format based on question type
+    //           return {
+    //             questionId: question.id,
+    //             ...(question.questionType === QuestionType.TEXT && {
+    //               answerText: answerContent,
+    //             }),
+    //             ...(question.questionType === QuestionType.BOOLEAN && {
+    //               answerBoolean: answerContent === "true" ? 1 : 0,
+    //             }),
+    //             ...(question.questionType === QuestionType.URL && {
+    //               url: answerContent,
+    //             }),
+    //             ...(question.questionType === QuestionType.FILE && {
+    //               fileUrl: answerContent,
+    //             }),
+    //           };
+    //         }),
+    //       },
+    //     },
+    //   });
+    // }
 
     console.log("🌱 Finished seeding successfully");
   } catch (error) {
