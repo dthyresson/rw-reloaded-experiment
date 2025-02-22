@@ -2,10 +2,21 @@ import { db } from "@/db";
 import { QuestionWizard } from "./QuestionWizard";
 
 // Hardcoded for demo
-const DEMO_USER_ID = "01f974cb-4a2f-4993-b948-4d7e2ac12885";
-const DEMO_QUESTION_SET_ID = "cm7gb0wm70000wy0nf2yeh5hu";
+// get first user
+async function getFirstUserId() {
+  const users = await db.user.findMany({ take: 1 });
+  return users[0].id;
+}
+
+// get first question set
+async function getFirstQuestionSetId() {
+  const questionSets = await db.questionSet.findMany({ take: 1 });
+  return questionSets[0].id;
+}
 
 export async function Start() {
+  const DEMO_USER_ID = await getFirstUserId();
+  const DEMO_QUESTION_SET_ID = await getFirstQuestionSetId();
   // Check for existing in-progress submission
   const existingSubmission = await db.submission.findFirst({
     where: {

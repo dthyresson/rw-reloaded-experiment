@@ -29,6 +29,7 @@ model User {
 
 enum QuestionType {
   TEXT
+  TEXT_AREA
   NUMBER
   BOOLEAN
   CURRENCY
@@ -112,7 +113,7 @@ model Answer {
   answerNumber   Float?
   answerBoolean  Int?
   answerCurrency Float?
-  currencyType   CurrencyType? @default(USD)
+  currencyType   CurrencyType?
   fileUrl        String?
   answerDate     DateTime?
   answerDatetime DateTime?

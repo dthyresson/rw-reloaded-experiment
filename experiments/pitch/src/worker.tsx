@@ -123,6 +123,22 @@ export default defineApp<Context>([
     });
     return new Response(JSON.stringify(submission.questionSet.questions));
   }),
+  route(
+    "/api/submissions/:submissionId/answers/:questionId",
+    async ({ params }) => {
+      const answer = await db.answer.findUnique({
+        where: {
+          submissionId_questionId: {
+            submissionId: params.submissionId,
+            questionId: params.questionId,
+          },
+        },
+      });
+      return new Response(JSON.stringify({ value: answer?.answerText }), {
+        headers: { "Content-Type": "application/json" },
+      });
+    },
+  ),
   route("/api/submissions/:id/complete", async ({ params }) => {
     await db.submission.update({
       where: { id: params.id },

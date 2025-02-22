@@ -44,14 +44,14 @@ export default defineScript(async ({ env }) => {
               questionText: "Tell us about your company, product, or idea.",
               description:
                 "Provide a clear and concise overview of what you're working on",
-              questionType: QuestionType.TEXT,
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 1,
               isRequired: true,
             },
             {
               questionText: "Tell us about yourself.",
               description: "Who are you and why are you working on this?",
-              questionType: QuestionType.TEXT,
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 2,
               isRequired: true,
             },
@@ -59,7 +59,7 @@ export default defineScript(async ({ env }) => {
               questionText: "How far along are you?",
               description:
                 "Tell us about your journey so far and how PWV can help. Tell us about any customers.",
-              questionType: QuestionType.TEXT,
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 3,
               isRequired: true,
             },
@@ -72,7 +72,7 @@ export default defineScript(async ({ env }) => {
             {
               questionText:
                 "Who have you raised from and what were the round and terms?",
-              questionType: QuestionType.TEXT,
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 5,
               isRequired: true,
             },
@@ -92,7 +92,7 @@ export default defineScript(async ({ env }) => {
             {
               questionText: "How did you hear about PWV?",
               description: "Who do you know that we might know?",
-              questionType: QuestionType.TEXT,
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 8,
               isRequired: true,
             },
@@ -113,7 +113,7 @@ export default defineScript(async ({ env }) => {
             },
             {
               questionText: "Were you referred by someone?",
-              questionType: QuestionType.TEXT,
+              questionType: QuestionType.TEXT_AREA,
               questionPosition: 11,
               isRequired: true,
             },

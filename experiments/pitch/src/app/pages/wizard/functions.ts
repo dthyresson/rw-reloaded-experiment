@@ -21,6 +21,7 @@ export async function saveAnswer({
 
   switch (type) {
     case "TEXT":
+    case "TEXT_AREA":
     case "URL":
       data.answerText = value;
       break;
@@ -33,13 +34,36 @@ export async function saveAnswer({
     case "FILE":
       data.fileUrl = value;
       break;
-    // Add other types as needed
+    case "DATE":
+      data.answerDate = new Date(value);
+      break;
+    case "DATETIME":
+      data.answerDatetime = new Date(value);
+      break;
+    case "PHONE":
+      data.phone = value;
+      break;
+    case "CURRENCY":
+      // Assuming currency value is sent as a number string
+      data.answerCurrency = parseFloat(value);
+      data.currencyType = "USD";
+      // Note: You might want to add currencyType handling if it's sent separately
+      break;
   }
 
-  return db.answer.create({
-    data: {
+  return db.answer.upsert({
+    where: {
+      submissionId_questionId: {
+        submissionId,
+        questionId,
+      },
+    },
+    create: {
       submissionId,
       questionId,
+      ...data,
+    },
+    update: {
       ...data,
     },
   });

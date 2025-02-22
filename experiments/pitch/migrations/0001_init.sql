@@ -58,7 +58,7 @@ CREATE TABLE "Answer" (
     "answerNumber" REAL,
     "answerBoolean" INTEGER,
     "answerCurrency" REAL,
-    "currencyType" TEXT DEFAULT 'USD',
+    "currencyType" TEXT,
     "fileUrl" TEXT,
     "answerDate" DATETIME,
     "answerDatetime" DATETIME,

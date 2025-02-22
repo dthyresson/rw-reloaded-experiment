@@ -50,7 +50,11 @@ export function QuestionWizard({
           <div className="text-sm text-muted-foreground">
             Question {currentIndex + 1} of {questions.length}
           </div>
-          <h2 className="text-2xl font-bold">{currentQuestion.questionText}</h2>
+          <div className="flex items-center gap-1">
+            <h2 className="text-2xl font-bold">
+              {currentQuestion.questionText}
+            </h2>
+          </div>
           {currentQuestion.description && (
             <p className="text-muted-foreground">
               {currentQuestion.description}

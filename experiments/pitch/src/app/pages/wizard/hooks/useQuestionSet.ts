@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+// @ts-ignore
 import { Question } from "@prisma/client";
 
 export function useQuestionSet(submissionId: string) {
