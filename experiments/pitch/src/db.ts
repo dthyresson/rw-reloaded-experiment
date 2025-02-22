@@ -7,7 +7,7 @@ export let db: PrismaClient;
 export const createDbClient = (env: Env) =>
   new PrismaClient({
     adapter: new PrismaD1(env.DB),
-    log: ["query", "info", "warn", "error"],
+    // log: ["query", "info", "warn", "error"],
   });
 
 export const setupDb = async (env: Env) => {

@@ -63,7 +63,6 @@ export function SubmissionCard({ submission }: { submission: any }) {
                 switch (answer.question.questionType) {
                   case "TEXT":
                   case "TEXT_AREA":
-                  case "URL":
                     return answer.answerText;
                   case "NUMBER":
                     return answer.answerNumber;

@@ -7,4 +7,5 @@ export const link = defineLinks([
   "/submissions/:id/edit",
   "/questions/:id",
   "/questions/:id/upload",
+  "/wizard/start",
 ]);
