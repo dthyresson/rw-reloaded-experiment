@@ -8,8 +8,14 @@ export function SubmissionCard({ submission }: { submission: any }) {
     <Card>
       <CardHeader>
         <a href={link("/submissions/:id", { id: submission.id })}>
-          Submitted by {submission.user.name}
+          Submitted by {submission.user.name} at{" "}
+          {submission.updatedAt.toLocaleString()}
         </a>
+        {submission.status === "COMPLETED" && (
+          <span className="text-xs text-gray-500 mx-4">
+            Completed at {submission.completedAt.toLocaleString()}
+          </span>
+        )}
       </CardHeader>
       <CardContent className="space-y-4">
         {submission.answers.map((answer: any) => (
@@ -22,6 +28,7 @@ export function SubmissionCard({ submission }: { submission: any }) {
                 switch (answer.question.questionType) {
                   case "TEXT":
                   case "TEXT_AREA":
+                  case "URL":
                     return answer.answerText;
                   case "NUMBER":
                     return answer.answerNumber;
@@ -61,6 +68,7 @@ export function SubmissionCard({ submission }: { submission: any }) {
                     return "Unknown answer type";
                 }
               })()}
+              <span className="text-xs text-gray-500 mx-4">Edit</span>
             </div>
           </div>
         ))}
