@@ -41,13 +41,14 @@ export async function Detail({ params }: RouteContext<{ id: string }>) {
 
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
+          <div className="space-y-2">
             <h1 className="text-2xl font-bold">Email Submission</h1>
+            <h2 className="text-xl text-gray-500">{emailSubmission.summary}</h2>
           </div>
+
           <div className="flex justify-between items-center">
             <div>
               <p>From: {emailSubmission.submission.user.email}</p>
-              <p>{emailSubmission.summary}</p>
             </div>
           </div>
         </CardHeader>
