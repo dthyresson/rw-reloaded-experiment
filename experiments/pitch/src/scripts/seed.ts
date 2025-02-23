@@ -54,12 +54,22 @@ export default defineScript(async ({ env }) => {
               isRequired: true,
             },
             {
+              questionText: "Where are you based?",
+              description:
+                "Do you have a physical address? Do you have a US entity?",
+              placeholder: "We're based in ...",
+              hint: "Where a company is based is a consideration for us. It's important to know if the copamny is US based or not.",
+              questionType: QuestionType.TEXT_AREA,
+              questionPosition: 2,
+              isRequired: true,
+            },
+            {
               questionText: "Tell us about yourself and your team.",
               description: "Who are you and why are you working on this?",
               placeholder: "We're a team of ...",
               hint: "Who are you and why did you start this venture? Mention key team members and their roles, and why they are suited for this project.",
               questionType: QuestionType.TEXT_AREA,
-              questionPosition: 2,
+              questionPosition: 3,
               isRequired: true,
             },
             {
@@ -69,7 +79,7 @@ export default defineScript(async ({ env }) => {
               placeholder: "We've seen solid traction ...",
               hint: "Share your company's journey to date. When did you launch, and what milestones have you reached? Include any customers, partnerships, or key traction points (e.g., revenue, users, product development stage).",
               questionType: QuestionType.TEXT_AREA,
-              questionPosition: 3,
+              questionPosition: 4,
               isRequired: true,
             },
             {
@@ -80,7 +90,7 @@ export default defineScript(async ({ env }) => {
               placeholder: "We're raising a seed round ...",
               hint: "If you have raised capital, provide details on the investors, the funding round, and any key terms. If you haven't raised funds yet, explain your plans for fundraising.",
               questionType: QuestionType.TEXT_AREA,
-              questionPosition: 4,
+              questionPosition: 5,
               isRequired: true,
             },
             {
@@ -90,7 +100,7 @@ export default defineScript(async ({ env }) => {
               placeholder: "https://linkedin.com/in/...",
               hint: "This helps us connect with you professionally. Feel free to share any other social profiles (e.g., Twitter, GitHub) that can help us learn more about you and your team.",
               questionType: QuestionType.URL,
-              questionPosition: 5,
+              questionPosition: 6,
               isRequired: false,
             },
             {
@@ -101,7 +111,7 @@ export default defineScript(async ({ env }) => {
               placeholder: "https://...",
               hint: "If your company has a website, please include the URL. If you are in stealth mode, that's okay, just let us know.",
               questionType: QuestionType.URL,
-              questionPosition: 6,
+              questionPosition: 7,
               isRequired: false,
             },
             {
@@ -110,7 +120,7 @@ export default defineScript(async ({ env }) => {
                 "Who do you know that we might know? Were you referred by someone?",
               hint: "Let us know how you came across PWV. Were you referred by someone we know, or did you find us through another channel?",
               questionType: QuestionType.TEXT_AREA,
-              questionPosition: 7,
+              questionPosition: 8,
               isRequired: true,
             },
             {
@@ -120,7 +130,7 @@ export default defineScript(async ({ env }) => {
                 "We'll use this to help us understand your company better. Videos are great too!",
               hint: "Any additional files that help us understand your company, such as a pitch deck, product demo, or videos, are extremely helpful in our evaluation.",
               questionType: QuestionType.FILE,
-              questionPosition: 8,
+              questionPosition: 9,
               isRequired: true,
             },
             {
@@ -130,7 +140,7 @@ export default defineScript(async ({ env }) => {
               placeholder: "Also, we're ...",
               hint: "Look for additional details or context that can help inform our decision. This could include unique aspects of the business, competitive advantages, or any other important information that hasn't been covered yet, such as future plans, partnerships, or why the request is a strong fit for investment.",
               questionType: QuestionType.TEXT_AREA,
-              questionPosition: 9,
+              questionPosition: 10,
               isRequired: false,
             },
           ],

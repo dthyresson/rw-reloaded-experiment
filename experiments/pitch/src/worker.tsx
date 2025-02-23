@@ -9,9 +9,9 @@ import { Detail as QuestionDetail } from "src/pages/questions/Detail";
 import { setupDb } from "./db";
 import { Edit } from "src/pages/submissions/Edit";
 import { db } from "@/db";
-import { RouteContext } from "@redwoodjs/sdk/router";
+// import { RouteContext } from "@redwoodjs/sdk/router";
 import { Start as WizardStart } from "./app/pages/wizard/Start";
-
+import { setupLangbase } from "./langbase";
 type Context = {
   id: string;
 };
@@ -19,6 +19,7 @@ type Context = {
 export default defineApp<Context>([
   async ({ ctx, env, request }) => {
     await setupDb(env);
+    await setupLangbase(env);
   },
   layout(Document, [
     index<Context>([List]),

@@ -1,11 +1,5 @@
-import { Langbase } from "langbase";
 import { db } from "@/db";
-
-const LANGBASE_API_KEY = process.env.LANGBASE_API_KEY;
-
-const langbase = new Langbase({
-  apiKey: LANGBASE_API_KEY!,
-});
+import { langbase } from "@/langbase";
 
 export async function getSummaryStream(submissionId: string, content: string) {
   const submission = await db.submission.findUnique({

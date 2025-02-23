@@ -3,6 +3,7 @@
 interface Env {
 	SECRET_KEY: "secret";
 	APP_URL: "https://pitch.app";
+	LANGBASE_API_KEY: "user_551p6SgwFQyLjdoJ7sMqN8jNhUP36Dms5niErympM3EAHXz7f3PQquJtoqfxubZE7Epq8jkMtpJYW9qYTm8Noz";
 	SESSION_DO: DurableObjectNamespace /* SessionDO */;
 	R2: R2Bucket;
 	DB: D1Database;

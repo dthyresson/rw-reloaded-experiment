@@ -6,9 +6,12 @@ import { link } from "@/app/shared/links";
 import { EmailSummary } from "./EmailSummary";
 import { getSummaryStream } from "@/app/services/summaryService";
 
-export async function Detail({ params, ctx }: RouteContext<{ id: string }>) {
+export async function Detail({
+  params,
+  env,
+  ctx,
+}: RouteContext<{ id: string }>) {
   const submission = await getSubmission(params.id);
-  console.log(submission);
   const request = submission.answers
     .map((answer: any) => {
       const getAnswerValue = () => {
