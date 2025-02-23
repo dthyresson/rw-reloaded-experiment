@@ -23,7 +23,6 @@ export function QuestionWizard({
   questions,
 }: QuestionWizardProps) {
   const [currentIndex, setCurrentIndex] = useState(currentQuestionIndex);
-  const [showIntro, setShowIntro] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!questions?.length) return <div>No questions found</div>;
@@ -60,36 +59,7 @@ export function QuestionWizard({
   return (
     <div className="min-h-screen md:flex md:items-center md:justify-center p-4">
       <div className="container max-w-2xl w-full">
-        {showIntro ? (
-          <Card>
-            <CardHeader>
-              <h2 className="text-2xl font-bold mb-8">Pitch PWV</h2>
-              <p className="text-muted-foreground">
-                We'll ask you {questions.length} questions that will help us
-                learn more about your startup.
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <ol className="list-decimal list-inside space-y-2">
-                {questions.map((question) => (
-                  <li key={question.id} className="">
-                    <p className="font-medium">{question.questionText}</p>
-                    <p className="text-muted-foreground">
-                      {question.description}
-                    </p>
-                  </li>
-                ))}
-              </ol>
-              <p>
-                You can save your progress at any time and continue later and
-                should take no more than a few minutes.
-              </p>
-            </CardContent>
-            <CardFooter>
-              <Button onClick={() => setShowIntro(false)}>Start</Button>
-            </CardFooter>
-          </Card>
-        ) : !isSubmitting ? (
+        {!isSubmitting ? (
           <Card>
             <CardHeader>
               <div className="text-sm text-muted-foreground">
@@ -116,14 +86,12 @@ export function QuestionWizard({
               )}
             </CardHeader>
             <CardContent>
-              {!isSubmitting && (
-                <QuestionForm
-                  question={currentQuestion}
-                  submissionId={submissionId}
-                  onComplete={handleNext}
-                  isLastQuestion={isLastQuestion}
-                />
-              )}
+              <QuestionForm
+                question={currentQuestion}
+                submissionId={submissionId}
+                onComplete={handleNext}
+                isLastQuestion={isLastQuestion}
+              />
             </CardContent>
             <CardFooter className="flex justify-between">
               <Button

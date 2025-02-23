@@ -5,9 +5,9 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardContent,
   CardFooter,
 } from "@/app/components/ui/card";
+import { IntroCard } from "./IntroCard";
 
 // Hardcoded for demo
 // get first user
@@ -85,20 +85,10 @@ export async function Start() {
         status: "IN_PROGRESS",
       },
     });
-    return (
-      <QuestionWizard
-        submissionId={submission.id}
-        currentQuestionIndex={0}
-        questions={questions}
-      />
-    );
+    return <IntroCard questions={questions} submissionId={submission.id} />;
   }
 
   return (
-    <QuestionWizard
-      submissionId={existingSubmission.id}
-      currentQuestionIndex={0}
-      questions={questions}
-    />
+    <IntroCard questions={questions} submissionId={existingSubmission.id} />
   );
 }

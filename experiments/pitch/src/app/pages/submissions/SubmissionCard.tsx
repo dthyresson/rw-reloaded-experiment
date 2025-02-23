@@ -50,63 +50,64 @@ export function SubmissionCard({ submission }: { submission: any }) {
             key={answer.id}
             className="flex flex-col space-y-1 border-b pb-4"
           >
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-600">
+            <div className="flex items-start gap-4">
+              <span className="text-sm font-medium text-gray-600 w-6 text-right">
                 {answer.question.questionPosition + 1}
               </span>
-              <span className="text-lg font-bold text-gray-600">
-                {answer.question.questionText}
-              </span>
-            </div>
-            <div className="text-gray-800 whitespace-pre-wrap break-words">
-              {(() => {
-                switch (answer.question.questionType) {
-                  case "TEXT":
-                  case "TEXT_AREA":
-                    return answer.answerText;
-                  case "NUMBER":
-                    return answer.answerNumber;
-                  case "BOOLEAN":
-                    return answer.answerBoolean ? "Yes" : "No";
-                  case "CURRENCY":
-                    return `${answer.currencyType} ${answer.answerCurrency?.toFixed(2)}`;
-                  case "FILE":
-                    return answer.fileUrl ? (
-                      <a
-                        href={answer.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View File
-                      </a>
-                    ) : null;
-                  case "DATE":
-                    return answer.answerDate
-                      ? format(new Date(answer.answerDate), "PP")
-                      : null;
-                  case "DATETIME":
-                    return answer.answerDatetime
-                      ? format(new Date(answer.answerDatetime), "PPp")
-                      : null;
-                  case "PHONE":
-                    return answer.phone;
-                  case "URL":
-                    return answer.url ? (
-                      <a
-                        href={answer.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        {answer.url}
-                      </a>
-                    ) : null;
-                  default:
-                    return "Unknown answer type";
-                }
-              })()}
-              <span className="text-xs text-gray-500 mx-4">Edit</span>
+              <div className="flex-1">
+                <span className="text-lg font-bold text-gray-600 block">
+                  {answer.question.questionText}
+                </span>
+                <div className="text-gray-800 whitespace-pre-wrap break-words mt-2">
+                  {(() => {
+                    switch (answer.question.questionType) {
+                      case "TEXT":
+                      case "TEXT_AREA":
+                        return answer.answerText;
+                      case "NUMBER":
+                        return answer.answerNumber;
+                      case "BOOLEAN":
+                        return answer.answerBoolean ? "Yes" : "No";
+                      case "CURRENCY":
+                        return `${answer.currencyType} ${answer.answerCurrency?.toFixed(2)}`;
+                      case "FILE":
+                        return answer.fileUrl ? (
+                          <a
+                            href={answer.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 underline"
+                          >
+                            View File
+                          </a>
+                        ) : null;
+                      case "DATE":
+                        return answer.answerDate
+                          ? format(new Date(answer.answerDate), "PP")
+                          : null;
+                      case "DATETIME":
+                        return answer.answerDatetime
+                          ? format(new Date(answer.answerDatetime), "PPp")
+                          : null;
+                      case "PHONE":
+                        return answer.phone;
+                      case "URL":
+                        return answer.url ? (
+                          <a
+                            href={answer.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 underline"
+                          >
+                            {answer.url}
+                          </a>
+                        ) : null;
+                      default:
+                        return "Unknown answer type";
+                    }
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
         ))}

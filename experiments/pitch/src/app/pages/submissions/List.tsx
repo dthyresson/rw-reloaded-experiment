@@ -32,7 +32,7 @@ export async function List() {
   const submissions = await getLatestSubmissions();
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-auto mx-auto p-6">
       <nav className="flex gap-2 mb-6 items-center">
         <a href={link("/")} className="hover:underline">
           Home
