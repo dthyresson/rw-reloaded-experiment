@@ -23,7 +23,12 @@ export async function List() {
     <div className="max-w-auto mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Email Submissions</h1>
-        <a href={link("/emails/new")}>New Email</a>
+        <a
+          className="bg-blue-500 text-white rounded-md p-2"
+          href={link("/emails/new")}
+        >
+          New Email
+        </a>
       </div>
 
       <Table>

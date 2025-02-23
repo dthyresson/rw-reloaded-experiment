@@ -46,7 +46,6 @@ CREATE TABLE "Submission" (
     "status" TEXT NOT NULL DEFAULT 'IN_PROGRESS',
     "raw" JSONB,
     "enriched" JSONB,
-    "emailSubmissionId" TEXT,
     CONSTRAINT "Submission_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Submission_questionSetId_fkey" FOREIGN KEY ("questionSetId") REFERENCES "QuestionSet" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -92,8 +91,8 @@ CREATE TABLE "EmailSubmission" (
     "content" TEXT NOT NULL,
     "summary" TEXT,
     "analysis" TEXT,
-    "submissionId" TEXT,
-    CONSTRAINT "EmailSubmission_submissionId_fkey" FOREIGN KEY ("submissionId") REFERENCES "Submission" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "submissionId" TEXT NOT NULL,
+    CONSTRAINT "EmailSubmission_submissionId_fkey" FOREIGN KEY ("submissionId") REFERENCES "Submission" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -104,9 +103,6 @@ CREATE UNIQUE INDEX "QuestionSet_name_versionNumber_key" ON "QuestionSet"("name"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Question_questionSetId_questionPosition_key" ON "Question"("questionSetId", "questionPosition");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Submission_emailSubmissionId_key" ON "Submission"("emailSubmissionId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Submission_userId_questionSetId_status_key" ON "Submission"("userId", "questionSetId", "status");

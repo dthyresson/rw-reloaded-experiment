@@ -101,10 +101,9 @@ model Submission {
   questionSet QuestionSet @relation(fields: [questionSetId], references: [id], onDelete: Cascade)
   answers     Answer[]
 
-  raw               Json?
-  enriched          Json?
-  emailSubmission   EmailSubmission? @relation("SubmissionToEmail")
-  emailSubmissionId String?          @unique
+  raw             Json?
+  enriched        Json?
+  emailSubmission EmailSubmission?
 
   @@unique([userId, questionSetId, status])
 }
@@ -145,12 +144,12 @@ model Otp {
 }
 
 model EmailSubmission {
-  id           String      @id @default(cuid())
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   content      String
   summary      String?
   analysis     String?
-  submission   Submission? @relation("SubmissionToEmail", fields: [submissionId], references: [id], onDelete: SetNull)
-  submissionId String?     @unique
+  submission   Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  submissionId String     @unique
 }

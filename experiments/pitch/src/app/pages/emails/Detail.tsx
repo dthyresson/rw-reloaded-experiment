@@ -29,6 +29,9 @@ export async function Detail({ params }: RouteContext<{ id: string }>) {
   return (
     <div className="max-w-auto mx-auto p-6">
       <nav className="flex gap-2 mb-6 items-center">
+        <a href={link("/")} className="hover:underline">
+          Pith Requests
+        </a>
         <a href={link("/emails")} className="hover:underline">
           Emails
         </a>

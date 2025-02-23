@@ -198,8 +198,6 @@ export default defineApp<Context>([
 
       const info = await emailInfo(content);
 
-      console.log("Email info", info);
-
       // get first question set
       const questionSet = await db.questionSet.findFirst({
         where: {
@@ -207,6 +205,7 @@ export default defineApp<Context>([
         },
       });
 
+      // Create both emailSubmission and submission in a single operation
       const emailSubmission = await db.emailSubmission.create({
         data: {
           content,
@@ -214,8 +213,9 @@ export default defineApp<Context>([
           submission: {
             create: {
               user: {
-                create: {
-                  email: info.sender.email,
+                connectOrCreate: {
+                  where: { email: info.sender.email },
+                  create: { email: info.sender.email },
                 },
               },
               questionSet: {
@@ -227,6 +227,9 @@ export default defineApp<Context>([
               completedAt: new Date(),
             },
           },
+        },
+        include: {
+          submission: true,
         },
       });
 
