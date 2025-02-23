@@ -38,6 +38,7 @@ export default defineScript(async ({ env }) => {
               questionText: "What is your name?",
               description: "What should we call you?",
               placeholder: "Hi!",
+              hint: "Please provide your full name or how you'd like us to address you.",
               questionType: QuestionType.TEXT,
               questionPosition: 0,
               isRequired: true,
@@ -47,6 +48,7 @@ export default defineScript(async ({ env }) => {
               description:
                 "Provide a clear and concise overview of what you're working on",
               placeholder: "We're working on ...",
+              hint: "Give a clear, concise description of what your company does, the problem you're solving, and your solution. Focus on the key aspects of your product or service.",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 1,
               isRequired: true,
@@ -55,6 +57,7 @@ export default defineScript(async ({ env }) => {
               questionText: "Tell us about yourself and your team.",
               description: "Who are you and why are you working on this?",
               placeholder: "We're a team of ...",
+              hint: "Who are you and why did you start this venture? Mention key team members and their roles, and why they are suited for this project.",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 2,
               isRequired: true,
@@ -64,6 +67,7 @@ export default defineScript(async ({ env }) => {
               description:
                 "Tell us about your journey so far and how PWV can help. When did you start? Tell us about any customers.",
               placeholder: "We've seen solid traction ...",
+              hint: "Share your company's journey to date. When did you launch, and what milestones have you reached? Include any customers, partnerships, or key traction points (e.g., revenue, users, product development stage).",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 3,
               isRequired: true,
@@ -74,6 +78,7 @@ export default defineScript(async ({ env }) => {
               description:
                 "If you have raised, please share the details. If not, please share your plans.",
               placeholder: "We're raising a seed round ...",
+              hint: "If you have raised capital, provide details on the investors, the funding round, and any key terms. If you haven't raised funds yet, explain your plans for fundraising.",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 4,
               isRequired: true,
@@ -83,7 +88,8 @@ export default defineScript(async ({ env }) => {
               description:
                 "This helps us connect with you. Or another social profile you'd like to share.",
               placeholder: "https://linkedin.com/in/...",
-              questionType: QuestionType.URL, // Note: Should be URL if available in schema
+              hint: "This helps us connect with you professionally. Feel free to share any other social profiles (e.g., Twitter, GitHub) that can help us learn more about you and your team.",
+              questionType: QuestionType.URL,
               questionPosition: 5,
               isRequired: false,
             },
@@ -93,7 +99,8 @@ export default defineScript(async ({ env }) => {
               description:
                 "We know you might still be in stealth mode, but if you have a website, we'd love to see it.",
               placeholder: "https://...",
-              questionType: QuestionType.URL, // Note: Should be URL if available in schema
+              hint: "If your company has a website, please include the URL. If you are in stealth mode, that's okay, just let us know.",
+              questionType: QuestionType.URL,
               questionPosition: 6,
               isRequired: false,
             },
@@ -101,6 +108,7 @@ export default defineScript(async ({ env }) => {
               questionText: "How did you hear about PWV?",
               description:
                 "Who do you know that we might know? Were you referred by someone?",
+              hint: "Let us know how you came across PWV. Were you referred by someone we know, or did you find us through another channel?",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 7,
               isRequired: true,
@@ -110,7 +118,8 @@ export default defineScript(async ({ env }) => {
                 "Please attach any supporting files, like a pitchdeck, demo, etc.",
               description:
                 "We'll use this to help us understand your company better. Videos are great too!",
-              questionType: QuestionType.FILE, // Note: Should be FILE if available in schema
+              hint: "Any additional files that help us understand your company, such as a pitch deck, product demo, or videos, are extremely helpful in our evaluation.",
+              questionType: QuestionType.FILE,
               questionPosition: 8,
               isRequired: true,
             },
@@ -119,6 +128,7 @@ export default defineScript(async ({ env }) => {
               description:
                 "Anything else you'd like to share with us to help us understand your company better.",
               placeholder: "Also, we're ...",
+              hint: "Look for additional details or context that can help inform our decision. This could include unique aspects of the business, competitive advantages, or any other important information that hasn't been covered yet, such as future plans, partnerships, or why the request is a strong fit for investment.",
               questionType: QuestionType.TEXT_AREA,
               questionPosition: 9,
               isRequired: false,

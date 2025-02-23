@@ -76,6 +76,7 @@ model Question {
   questionSetId    String
   questionText     String
   description      String?
+  hint             String
   placeholder      String?
   questionType     QuestionType
   questionPosition Int          @default(0)

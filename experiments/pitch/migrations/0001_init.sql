@@ -27,6 +27,7 @@ CREATE TABLE "Question" (
     "questionSetId" TEXT NOT NULL,
     "questionText" TEXT NOT NULL,
     "description" TEXT,
+    "hint" TEXT NOT NULL,
     "placeholder" TEXT,
     "questionType" TEXT NOT NULL,
     "questionPosition" INTEGER NOT NULL DEFAULT 0,
