@@ -8,4 +8,7 @@ export const link = defineLinks([
   "/questions/:id",
   "/questions/:id/upload",
   "/wizard/start",
+  "/emails",
+  "/emails/new",
+  "/emails/:id",
 ]);

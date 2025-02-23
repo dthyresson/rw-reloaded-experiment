@@ -10,6 +10,7 @@ export default defineScript(async ({ env }) => {
     setupDb(env);
 
     await db.$executeRawUnsafe(`\
+      DELETE FROM EmailSubmission;
       DELETE FROM Answer;
       DELETE FROM Question;
       DELETE FROM QuestionSet;

@@ -8,6 +8,5 @@ export const createLangbaseClient = (env: Env) =>
   });
 
 export const setupLangbase = async (env: Env) => {
-  console.log("setupLangbase", env.LANGBASE_API_KEY);
   langbase = createLangbaseClient(env);
 };

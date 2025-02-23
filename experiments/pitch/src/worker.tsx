@@ -1,10 +1,13 @@
 import { defineApp } from "@redwoodjs/sdk/worker";
 import { index, layout, prefix, route } from "@redwoodjs/sdk/router";
 import { Document } from "src/Document";
-import { Home } from "src/pages/Home";
-import { List } from "src/pages/submissions/List";
-import { Detail } from "src/pages/submissions/Detail";
-import { Detail as QuestionDetail } from "src/pages/questions/Detail";
+import { Home } from "@/app/pages/Home";
+import { List } from "@/app/pages/submissions/List";
+import { Detail } from "@/app/pages/submissions/Detail";
+import { Detail as QuestionDetail } from "@/app/pages/questions/Detail";
+import { List as EmailList } from "@/app/pages/emails/List";
+import { Detail as EmailDetail } from "@/app/pages/emails/Detail";
+import { New as EmailNew } from "@/app/pages/emails/New";
 
 import { setupDb } from "./db";
 import { Edit } from "src/pages/submissions/Edit";
@@ -115,6 +118,11 @@ export default defineApp<Context>([
         }
       }),
     ]),
+    prefix("/emails", [
+      route<Context>("/", EmailList),
+      route<Context>("/new", EmailNew),
+      route<Context>("/:id", EmailDetail),
+    ]),
   ]),
   route("/wizard/start", [WizardStart]),
   route("/api/submissions/:id/questions", async ({ params }) => {
@@ -176,6 +184,50 @@ export default defineApp<Context>([
     } catch (error) {
       console.error("Error completing submission", error);
       return new Response("Error completing submission", { status: 500 });
+    }
+  }),
+  route("/api/emails", async ({ request }) => {
+    if (request.method !== "POST") {
+      return new Response("Method not allowed", { status: 405 });
+    }
+
+    try {
+      const { content } = await request.json();
+      // get first question set
+      const questionSet = await db.questionSet.findFirst({
+        where: {
+          isActive: true,
+        },
+      });
+
+      const emailSubmission = await db.emailSubmission.create({
+        data: {
+          content,
+          submission: {
+            create: {
+              user: {
+                create: {
+                  email: `user_${Math.random().toString(36).substring(2)}@example.com`,
+                },
+              },
+              questionSet: {
+                connect: {
+                  id: questionSet.id,
+                },
+              },
+              status: "COMPLETED",
+              completedAt: new Date(),
+            },
+          },
+        },
+      });
+
+      return new Response(JSON.stringify(emailSubmission), {
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      console.error("Error creating email submission:", error);
+      return new Response("Error creating email submission", { status: 500 });
     }
   }),
 ]);
