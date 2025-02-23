@@ -13,7 +13,6 @@ import {
 import { updateAnswer } from "@/app/services/submissions";
 import { Toaster } from "@/app/components/ui/sonner";
 import { toast } from "sonner";
-import { link } from "@/app/shared/links";
 
 export function AnswerForm({
   submissionId,

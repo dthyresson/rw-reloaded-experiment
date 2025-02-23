@@ -8,9 +8,11 @@ import { Detail as QuestionDetail } from "@/app/pages/questions/Detail";
 import { List as EmailList } from "@/app/pages/emails/List";
 import { Detail as EmailDetail } from "@/app/pages/emails/Detail";
 import { New as EmailNew } from "@/app/pages/emails/New";
+import { Edit } from "@/app/pages/submissions/Edit";
 
+import { emailInfo } from "@/app/services/agents";
 import { setupDb } from "./db";
-import { Edit } from "src/pages/submissions/Edit";
+
 import { db } from "@/db";
 // import { RouteContext } from "@redwoodjs/sdk/router";
 import { Start as WizardStart } from "./app/pages/wizard/Start";
@@ -193,6 +195,11 @@ export default defineApp<Context>([
 
     try {
       const { content } = await request.json();
+
+      const info = await emailInfo(content);
+
+      console.log("Email info", info);
+
       // get first question set
       const questionSet = await db.questionSet.findFirst({
         where: {
@@ -203,11 +210,12 @@ export default defineApp<Context>([
       const emailSubmission = await db.emailSubmission.create({
         data: {
           content,
+          summary: info.summary,
           submission: {
             create: {
               user: {
                 create: {
-                  email: `user_${Math.random().toString(36).substring(2)}@example.com`,
+                  email: info.sender.email,
                 },
               },
               questionSet: {

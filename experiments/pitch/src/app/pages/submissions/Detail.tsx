@@ -3,8 +3,8 @@ import { RouteContext } from "@redwoodjs/sdk/router";
 import { getSubmission } from "@/app/services/submissions";
 import { SubmissionCard } from "@/app/pages/submissions/SubmissionCard";
 import { link } from "@/app/shared/links";
-import { EmailSummary } from "./EmailSummary";
-import { getSummaryStream } from "@/app/services/summaryService";
+// import { PitchRequestSummary } from "@/app/pages/submissions/PitchRequestSummary";
+import { pitchRequestSummarizer } from "@/app/services/agents";
 
 export async function Detail({
   params,
@@ -41,7 +41,7 @@ export async function Detail({
     })
     .join("\n");
 
-  const summaryStream = await getSummaryStream(submission.id, request);
+  const summary = await pitchRequestSummarizer(submission.id, request);
 
   return (
     <div className="max-w-auto mx-auto p-6 space-y-6">
@@ -60,7 +60,9 @@ export async function Detail({
         <SubmissionCard submission={submission} />
         <div className="bg-gray-100 p-6 rounded-lg">
           <h2 className="text-lg font-medium mb-4">Request Details</h2>
-          <EmailSummary stream={summaryStream} />
+          <pre className="text-sm text-gray-700 prose prose-sm max-w-none whitespace-pre-wrap">
+            {summary}
+          </pre>
         </div>
       </div>
     </div>

@@ -45,6 +45,7 @@ export async function getLatestSubmissions() {
     include: {
       user: true,
       questionSet: true,
+      emailSubmission: true,
       answers: {
         include: { question: true },
       },

@@ -44,18 +44,27 @@ export async function List() {
       </nav>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Requests to Pitch</h1>
-        <a
-          href={link("/wizard/start")}
-          className="bg-blue-500 text-white rounded-md p-2"
-        >
-          New Request
-        </a>
+        <div className="flex gap-2">
+          <a
+            href={link("/wizard/start")}
+            className="bg-blue-500 text-white rounded-md p-2"
+          >
+            New Request
+          </a>
+          <a
+            href={link("/emails/new")}
+            className="bg-blue-500 text-white rounded-md p-2"
+          >
+            New Email
+          </a>
+        </div>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>By</TableHead>
             <TableHead>Request</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Updated</TableHead>
             <TableHead>Status</TableHead>
@@ -67,21 +76,20 @@ export async function List() {
               <TableCell>
                 <a
                   className="underline-offset-4 hover:underline"
-                  href={link("/submissions/:id", { id: submission.id })}
+                  href={link(
+                    submission.emailSubmission
+                      ? "/emails/:id"
+                      : "/submissions/:id",
+                    { id: submission.emailSubmission?.id || submission.id },
+                  )}
                 >
-                  {submission.user.name}
+                  {submission.user.email || submission.user.email}
                 </a>
               </TableCell>
               <TableCell>
-                <a
-                  className="underline-offset-4 hover:underline"
-                  href={link("/questions/:id", {
-                    id: submission.questionSet.id,
-                  })}
-                >
-                  {submission.questionSet.name}
-                </a>
+                {submission.emailSubmission ? "Email" : "Questionnaire"}
               </TableCell>
+              <TableCell>{submission.questionSet.name}</TableCell>
               <TableCell>
                 {(() => {
                   const date = new Date(submission.createdAt);

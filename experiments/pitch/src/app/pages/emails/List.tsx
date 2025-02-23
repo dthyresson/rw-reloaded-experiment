@@ -49,9 +49,6 @@ export async function List() {
                   addSuffix: true,
                 })}
               </TableCell>
-              <TableCell className="truncate max-w-md">
-                {email.summary}
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>

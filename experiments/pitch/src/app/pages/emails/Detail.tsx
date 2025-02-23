@@ -2,13 +2,17 @@ import { db } from "@/db";
 import { link } from "@/app/shared/links";
 import { Card, CardHeader, CardContent } from "@/app/components/ui/card";
 import { RouteContext } from "@redwoodjs/sdk/router";
-import { EmailSummary } from "@/app/pages/submissions/EmailSummary";
-import { getSummaryStream } from "@/app/services/summaryService";
+// import { PitchRequestSummary } from "@/app/pages/submissions/PitchRequestSummary";
+import { pitchRequestSummarizer } from "@/app/services/agents";
 
 export async function Detail({ params }: RouteContext<{ id: string }>) {
   const emailSubmission = await db.emailSubmission.findUnique({
     include: {
-      submission: true,
+      submission: {
+        include: {
+          user: true,
+        },
+      },
     },
     where: { id: params.id },
   });
@@ -17,7 +21,7 @@ export async function Detail({ params }: RouteContext<{ id: string }>) {
     return <div>Email submission not found</div>;
   }
 
-  const summaryStream = await getSummaryStream(
+  const summary = await pitchRequestSummarizer(
     emailSubmission.submission.id,
     emailSubmission.content,
   );
@@ -37,21 +41,27 @@ export async function Detail({ params }: RouteContext<{ id: string }>) {
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">Email Submission</h1>
           </div>
+          <div className="flex justify-between items-center">
+            <div>
+              <p>From: {emailSubmission.submission.user.email}</p>
+              <p>{emailSubmission.summary}</p>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="prose max-w-none">
             <div className="grid grid-cols-2 gap-6">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Summary</h2>
+                <h3 className="text-xl font-semibold mb-4">Analysis</h3>
+                <div className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">
+                  {summary}
+                </div>
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Original Email</h2>
                 <pre className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">
                   {emailSubmission.content}
                 </pre>
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold mb-4">Analysis</h3>
-                <div className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">
-                  <EmailSummary stream={summaryStream} />
-                </div>
               </div>
             </div>
           </div>

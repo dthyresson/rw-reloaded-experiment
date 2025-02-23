@@ -41,15 +41,19 @@ export function New() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create email submission");
+        // Get error message from response if available
+        const errorData = await response.text();
+        throw new Error(`Failed to create email submission: ${errorData}`);
       }
 
       const data = await response.json();
+      console.log("Created email submission:", data); // Add logging
+
       toast.success("Email submission created successfully");
-      window.location.href = link("/emails/:id", { id: data.id });
+      window.location.href = link("/emails");
     } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to create email submission");
+      console.error("Error creating email submission:", error);
+      toast.error(`Failed to create email submission`);
     } finally {
       setIsSubmitting(false);
     }
