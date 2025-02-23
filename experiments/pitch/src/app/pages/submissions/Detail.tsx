@@ -14,10 +14,10 @@ export async function Detail({ params, ctx }: RouteContext<{ id: string }>) {
         </a>
         <div className="h-4 w-px bg-gray-300"></div>
         <a href={link("/submissions")} className="hover:underline">
-          Submissions
+          Requests to Pitch
         </a>
         <div className="h-4 w-px bg-gray-300"></div>
-        <span>{submission.user.name}'s Submission</span>
+        <span>{submission.user.name}'s Request</span>
       </nav>
       <SubmissionCard submission={submission} />
       <a

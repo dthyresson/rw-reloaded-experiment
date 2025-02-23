@@ -28,7 +28,7 @@ export function SubmissionCard({ submission }: { submission: any }) {
           href={link("/submissions/:id", { id: submission.id })}
           className="text-2xl font-medium hover:text-blue-600 transition-colors"
         >
-          {submission.user.name} Pitch Submission
+          {submission.user.name} Pitch Request
         </a>
         <div className="flex items-center text-sm text-gray-500">
           <span>

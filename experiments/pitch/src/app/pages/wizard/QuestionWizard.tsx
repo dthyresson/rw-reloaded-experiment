@@ -58,78 +58,89 @@ export function QuestionWizard({
   };
 
   return (
-    <div className="container max-w-2xl mx-auto py-8">
-      {showIntro ? (
-        <Card>
-          <CardHeader>
-            <h2 className="text-2xl font-bold">Let's create your pitch</h2>
-            <p className="text-muted-foreground">
-              We'll guide you through a series of questions to help create your
-              pitch.
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <p>
-              You'll be answering {questions.length} questions in total. You can
-              save your progress at any time and continue later.
-            </p>
-            <p>This should take no more than 10 minutes.</p>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => setShowIntro(false)}>Start</Button>
-          </CardFooter>
-        </Card>
-      ) : !isSubmitting ? (
-        <Card>
-          <CardHeader>
-            <div className="text-sm text-muted-foreground">
-              Question {currentIndex + 1} of {questions.length}
-              {questions.length - currentIndex <= 3 && (
-                <span className="ml-2">
-                  {questions.length - currentIndex === 3 &&
-                    "- Just 3 more to go!"}
-                  {questions.length - currentIndex === 2 &&
-                    "- Almost there, 2 to go!"}
-                  {questions.length - currentIndex === 1 && "- Last one!"}
-                </span>
-              )}
-            </div>
-            <div className="flex items-center gap-1">
-              <h2 className="text-2xl font-bold">
-                {currentQuestion.questionText}
-              </h2>
-            </div>
-            {currentQuestion.description && (
+    <div className="min-h-screen md:flex md:items-center md:justify-center p-4">
+      <div className="container max-w-2xl w-full">
+        {showIntro ? (
+          <Card>
+            <CardHeader>
+              <h2 className="text-2xl font-bold mb-8">Pitch PWV</h2>
               <p className="text-muted-foreground">
-                {currentQuestion.description}
+                We'll ask you {questions.length} questions that will help us
+                learn more about your startup.
               </p>
-            )}
-          </CardHeader>
-          <CardContent>
-            {!isSubmitting && (
-              <QuestionForm
-                question={currentQuestion}
-                submissionId={submissionId}
-                onComplete={handleNext}
-                isLastQuestion={isLastQuestion}
-              />
-            )}
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button
-              variant="outline"
-              disabled={currentIndex === 0}
-              onClick={() => setCurrentIndex((prev) => prev - 1)}
-            >
-              Previous
-            </Button>
-          </CardFooter>
-        </Card>
-      ) : (
-        <div className="flex items-center justify-center h-full">
-          <div className="flex items-center space-x-4">Submitting...</div>
-        </div>
-      )}
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <ol className="list-decimal list-inside space-y-2">
+                {questions.map((question) => (
+                  <li key={question.id} className="">
+                    <p className="font-medium">{question.questionText}</p>
+                    <p className="text-muted-foreground">
+                      {question.description}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+              <p>
+                You can save your progress at any time and continue later and
+                should take no more than a few minutes.
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button onClick={() => setShowIntro(false)}>Start</Button>
+            </CardFooter>
+          </Card>
+        ) : !isSubmitting ? (
+          <Card>
+            <CardHeader>
+              <div className="text-sm text-muted-foreground">
+                Question {currentIndex + 1} of {questions.length}
+                {questions.length - currentIndex <= 3 && (
+                  <span className="ml-2">
+                    {questions.length - currentIndex === 3 &&
+                      "- Just 3 more to go!"}
+                    {questions.length - currentIndex === 2 &&
+                      "- Almost there, 2 to go!"}
+                    {questions.length - currentIndex === 1 && "- Last one!"}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-1">
+                <h2 className="text-2xl font-bold">
+                  {currentQuestion.questionText}
+                </h2>
+              </div>
+              {currentQuestion.description && (
+                <p className="text-muted-foreground">
+                  {currentQuestion.description}
+                </p>
+              )}
+            </CardHeader>
+            <CardContent>
+              {!isSubmitting && (
+                <QuestionForm
+                  question={currentQuestion}
+                  submissionId={submissionId}
+                  onComplete={handleNext}
+                  isLastQuestion={isLastQuestion}
+                />
+              )}
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <Button
+                variant="outline"
+                disabled={currentIndex === 0}
+                onClick={() => setCurrentIndex((prev) => prev - 1)}
+              >
+                Previous
+              </Button>
+            </CardFooter>
+          </Card>
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="flex items-center space-x-4">Submitting...</div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

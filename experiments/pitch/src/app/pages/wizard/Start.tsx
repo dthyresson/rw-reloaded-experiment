@@ -53,14 +53,14 @@ export async function Start() {
       <div className="flex justify-center items-center h-screen">
         <Card>
           <CardHeader>
-            <CardTitle>You have already completed a pitch.</CardTitle>
+            <CardTitle>You have already requested to pitch PWV.</CardTitle>
           </CardHeader>
           <CardFooter>
             <a
               href={link(`/submissions/:id`, { id: completedSubmission.id })}
               className="text-primary hover:text-primary/80 font-medium"
             >
-              View submission →
+              View your request →
             </a>
           </CardFooter>
         </Card>

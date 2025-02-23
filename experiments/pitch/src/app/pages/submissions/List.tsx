@@ -39,23 +39,23 @@ export async function List() {
         </a>
         <div className="h-4 w-px bg-gray-300"></div>
         <a href={link("/submissions")} className="hover:underline">
-          Submissions
+          Requests to Pitch
         </a>
       </nav>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Submissions</h1>
+        <h1 className="text-2xl font-bold">Requests to Pitch</h1>
         <a
           href={link("/wizard/start")}
           className="bg-blue-500 text-white rounded-md p-2"
         >
-          New Submission
+          New Request
         </a>
       </div>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>By</TableHead>
-            <TableHead>Submission</TableHead>
+            <TableHead>Request</TableHead>
             <TableHead>Created</TableHead>
             <TableHead>Updated</TableHead>
             <TableHead>Status</TableHead>
