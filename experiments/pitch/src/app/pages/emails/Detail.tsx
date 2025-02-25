@@ -1,9 +1,30 @@
+"use server";
+
+import { Suspense } from "react";
 import { db } from "@/db";
 import { link } from "@/app/shared/links";
 import { Card, CardHeader, CardContent } from "@/app/components/ui/card";
 import { RouteContext } from "@redwoodjs/sdk/router";
 // import { PitchRequestSummary } from "@/app/pages/submissions/PitchRequestSummary";
 import { pitchRequestSummarizer } from "@/app/services/agents";
+
+// The component can now be async
+const SummaryDisplay = async ({
+  emailSubmission,
+}: {
+  emailSubmission: any;
+}) => {
+  const summary = await pitchRequestSummarizer(
+    emailSubmission.submission.id,
+    emailSubmission.content,
+  );
+
+  return (
+    <div className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">
+      {summary}
+    </div>
+  );
+};
 
 export async function Detail({ params }: RouteContext<{ id: string }>) {
   const emailSubmission = await db.emailSubmission.findUnique({
@@ -20,11 +41,6 @@ export async function Detail({ params }: RouteContext<{ id: string }>) {
   if (!emailSubmission) {
     return <div>Email submission not found</div>;
   }
-
-  const summary = await pitchRequestSummarizer(
-    emailSubmission.submission.id,
-    emailSubmission.content,
-  );
 
   return (
     <div className="max-w-auto mx-auto p-6">
@@ -57,9 +73,10 @@ export async function Detail({ params }: RouteContext<{ id: string }>) {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <h3 className="text-xl font-semibold mb-4">Analysis</h3>
-                <div className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">
-                  {summary}
-                </div>
+                <Suspense fallback={<div>Agents are working...</div>}>
+                  {/* @ts-expect-error Async Server Component */}
+                  <SummaryDisplay emailSubmission={emailSubmission} />
+                </Suspense>
               </div>
               <div>
                 <h2 className="text-xl font-semibold mb-4">Original Email</h2>

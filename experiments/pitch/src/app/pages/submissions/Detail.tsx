@@ -1,10 +1,26 @@
-import React from "react";
+import { Suspense } from "react";
 import { RouteContext } from "@redwoodjs/sdk/router";
 import { getSubmission } from "@/app/services/submissions";
 import { SubmissionCard } from "@/app/pages/submissions/SubmissionCard";
 import { link } from "@/app/shared/links";
 // import { PitchRequestSummary } from "@/app/pages/submissions/PitchRequestSummary";
 import { pitchRequestSummarizer } from "@/app/services/agents";
+
+const SummaryDisplay = async ({
+  submission,
+  request,
+}: {
+  submission: any;
+  request: any;
+}) => {
+  const summary = await pitchRequestSummarizer(submission.id, request);
+
+  return (
+    <div className="bg-gray-100 p-4 rounded-md whitespace-pre-wrap">
+      {summary}
+    </div>
+  );
+};
 
 export async function Detail({
   params,
@@ -41,8 +57,6 @@ export async function Detail({
     })
     .join("\n");
 
-  const summary = await pitchRequestSummarizer(submission.id, request);
-
   return (
     <div className="max-w-auto mx-auto p-6 space-y-6">
       <nav className="flex gap-2 mb-6 items-center">
@@ -59,10 +73,11 @@ export async function Detail({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <SubmissionCard submission={submission} />
         <div className="bg-gray-100 p-6 rounded-lg">
-          <h2 className="text-lg font-medium mb-4">Request Details</h2>
-          <pre className="text-sm text-gray-700 prose prose-sm max-w-none whitespace-pre-wrap">
-            {summary}
-          </pre>
+          <h2 className="text-lg font-medium mb-4">Request Analysis</h2>
+          <Suspense fallback={<div>Agents are working...</div>}>
+            {/* @ts-expect-error Async Server Component */}
+            <SummaryDisplay submission={submission} request={request} />
+          </Suspense>
         </div>
       </div>
     </div>
