@@ -71,16 +71,41 @@ export function SubmissionCard({ submission }: { submission: any }) {
                       case "CURRENCY":
                         return `${answer.currencyType} ${answer.answerCurrency?.toFixed(2)}`;
                       case "FILE":
-                        return answer.fileUrl ? (
-                          <a
-                            href={answer.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 underline"
-                          >
-                            View File
-                          </a>
-                        ) : null;
+                        if (answer.fileUrl) {
+                          // also show the file image inline or doc
+                          const fileUrl = link("/files/:key", {
+                            key: answer.fileUrl,
+                          });
+                          const fileType = fileUrl.split(".").pop();
+                          const isImage =
+                            fileType === "png" ||
+                            fileType === "jpg" ||
+                            fileType === "jpeg" ||
+                            fileType === "gif" ||
+                            fileType === "webp" ||
+                            fileType === "svg" ||
+                            fileType === "pdf";
+                          return (
+                            <>
+                              {isImage && (
+                                <img
+                                  src={fileUrl}
+                                  alt="File"
+                                  className="w-full object-cover"
+                                />
+                              )}
+
+                              <a
+                                href={fileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline"
+                              >
+                                Download File
+                              </a>
+                            </>
+                          );
+                        }
                       case "DATE":
                         return answer.answerDate
                           ? format(new Date(answer.answerDate), "PP")

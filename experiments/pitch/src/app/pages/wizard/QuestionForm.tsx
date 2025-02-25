@@ -9,6 +9,7 @@ import { saveAnswer } from "./functions";
 import type { Question } from "@prisma/client";
 import { Label } from "@/app/components/ui/label";
 import { Skeleton } from "@/app/components/ui/skeleton";
+import { link } from "src/shared/links";
 
 interface QuestionFormProps {
   question: Question;
@@ -88,6 +89,7 @@ export function QuestionForm({
             <Textarea
               placeholder={question.placeholder || "Enter your answer"}
               value={value}
+              rows={12}
               onChange={(e) => setValue(e.target.value)}
             />
           );
@@ -132,16 +134,68 @@ export function QuestionForm({
 
         case "FILE":
           return (
-            <Input
-              type="file"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  // Handle file upload
-                  setValue(file.name);
-                }
-              }}
-            />
+            <div>
+              <Input
+                type="file"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  console.log("file", file);
+                  if (file) {
+                    // Set a temporary value to enable the button while uploading
+                    setValue("uploading");
+
+                    // Create a FormData object to upload the file
+                    const formData = new FormData();
+                    // add question id
+                    formData.append("questionId", question.id);
+                    // add submission id
+                    formData.append("submissionId", submissionId);
+                    formData.append("file", file);
+
+                    try {
+                      console.log(
+                        "Uploading the file to R2 via an API endpoint",
+                      );
+                      const response = await fetch(
+                        link("/submissions/:id/questions/:questionId/upload", {
+                          id: submissionId,
+                          questionId: question.id,
+                        }),
+                        {
+                          method: "POST",
+                          body: formData,
+                        },
+                      );
+
+                      if (response.ok) {
+                        const data = await response.json();
+                        console.log("data", data);
+                        // Save the R2 file URL/key instead of just the filename
+                        setValue(data.objectKey);
+                      } else {
+                        console.error("Failed to upload file");
+                        // Reset value if upload fails
+                        setValue("");
+                      }
+                    } catch (error) {
+                      console.error("Error uploading file:", error);
+                      // Reset value if upload fails
+                      setValue("");
+                    }
+                  }
+                }}
+              />
+              {value === "uploading" && (
+                <div className="mt-2 text-sm text-muted-foreground">
+                  Uploading file...
+                </div>
+              )}
+              {value && value !== "uploading" && (
+                <div className="mt-2 text-sm text-green-600">
+                  File uploaded successfully
+                </div>
+              )}
+            </div>
           );
 
         default:
@@ -167,10 +221,22 @@ export function QuestionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {renderInput()}
+      {isLoading ? (
+        <div className="space-y-2">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+        </div>
+      ) : (
+        renderInput()
+      )}
       <Button
         type="submit"
-        disabled={isSubmitting || (question.isRequired && !value) || isLoading}
+        disabled={
+          isSubmitting ||
+          (question.isRequired && !value) ||
+          (question.questionType === "FILE" && value === "uploading") ||
+          isLoading
+        }
         className="w-full"
       >
         {isSubmitting ? "Saving..." : isLastQuestion ? "Submit" : "Continue →"}

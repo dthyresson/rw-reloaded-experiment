@@ -5,6 +5,8 @@ export const link = defineLinks([
   "/submissions",
   "/submissions/:id",
   "/submissions/:id/edit",
+  "/submissions/:id/questions/:questionId/upload",
+  "/files/:key",
   "/questions/:id",
   "/questions/:id/upload",
   "/wizard/start",
