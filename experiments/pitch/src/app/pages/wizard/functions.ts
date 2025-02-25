@@ -22,7 +22,6 @@ export async function saveAnswer({
   switch (type) {
     case "TEXT":
     case "TEXT_AREA":
-    case "URL":
       data.answerText = value;
       break;
     case "BOOLEAN":
@@ -48,6 +47,9 @@ export async function saveAnswer({
       data.answerCurrency = parseFloat(value);
       data.currencyType = "USD";
       // Note: You might want to add currencyType handling if it's sent separately
+      break;
+    case "URL":
+      data.url = value;
       break;
   }
 
