@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { QuestionWizard } from "./QuestionWizard";
+// import { QuestionWizard } from "./QuestionWizard";
 import { link } from "src/shared/links";
 import {
   Card,
@@ -77,18 +77,19 @@ export async function Start() {
     },
   });
 
-  if (!existingSubmission) {
-    const submission = await db.submission.create({
+  // Get or create a submission
+  const submission =
+    existingSubmission ||
+    (await db.submission.create({
       data: {
         userId: DEMO_USER_ID,
         questionSetId: DEMO_QUESTION_SET_ID,
         status: "IN_PROGRESS",
       },
-    });
-    return <IntroCard questions={questions} submissionId={submission.id} />;
-  }
+    }));
 
-  return (
-    <IntroCard questions={questions} submissionId={existingSubmission.id} />
-  );
+  console.log("using submission", submission);
+
+  // Render the IntroCard with the submission ID
+  return <IntroCard questions={questions} submissionId={submission.id} />;
 }
